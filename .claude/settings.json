@@ -1,0 +1,239 @@
+{
+  "version": "1.0.0",
+  "description": "Claude Code configuration for SaaS Boilerplate",
+  "monorepo": {
+    "backend": "./backend",
+    "frontend": "./frontend"
+  },
+  "skills": {
+    "backend": [
+      {
+        "name": "fastapi-endpoint",
+        "description": "Create complete CRUD endpoint with schema, repository, service, and router",
+        "status": "active",
+        "location": "backend/.claude/skills/fastapi-endpoint"
+      },
+      {
+        "name": "fastapi-model",
+        "description": "Create SQLAlchemy model with proper typing, relationships, and indexes",
+        "status": "active",
+        "location": "backend/.claude/skills/fastapi-model"
+      },
+      {
+        "name": "fastapi-migration",
+        "description": "Create and manage Alembic database migrations",
+        "status": "active",
+        "location": "backend/.claude/skills/fastapi-migration"
+      },
+      {
+        "name": "fastapi-permission",
+        "description": "Add new permissions and roles to RBAC system",
+        "status": "active",
+        "location": "backend/.claude/skills/fastapi-permission"
+      },
+      {
+        "name": "fastapi-test",
+        "description": "Generate comprehensive unit and integration tests",
+        "status": "active",
+        "location": "backend/.claude/skills/fastapi-test"
+      },
+      {
+        "name": "fastapi-feature",
+        "description": "Create complete backend feature with all layers",
+        "status": "active",
+        "location": "backend/.claude/skills/fastapi-feature"
+      }
+    ],
+    "frontend": [
+      {
+        "name": "react-component",
+        "description": "Create TypeScript component with Tailwind and shadcn/ui",
+        "status": "active",
+        "location": "frontend/.claude/skills/react-component"
+      },
+      {
+        "name": "react-form",
+        "description": "Create form with Zod validation and react-hook-form",
+        "status": "active",
+        "location": "frontend/.claude/skills/react-form"
+      },
+      {
+        "name": "api-integration",
+        "description": "Create API integration with TanStack Query hooks",
+        "status": "active",
+        "location": "frontend/.claude/skills/api-integration"
+      },
+      {
+        "name": "react-feature",
+        "description": "Create complete feature with API, hooks, components, and pages",
+        "status": "active",
+        "location": "frontend/.claude/skills/react-feature"
+      },
+      {
+        "name": "react-page",
+        "description": "Create page component and add to routing configuration",
+        "status": "active",
+        "location": "frontend/.claude/skills/react-page"
+      }
+    ],
+    "root": [
+      {
+        "name": "backend-first",
+        "description": "Implement complete fullstack feature using backend-first workflow (recommended for data-driven features)",
+        "status": "active",
+        "location": ".claude/skills/backend-first",
+        "notes": "Guides through backend implementation, type generation, and frontend integration"
+      },
+      {
+        "name": "api-to-ui",
+        "description": "Create complete frontend UI integration for existing backend API endpoints",
+        "status": "active",
+        "location": ".claude/skills/api-to-ui",
+        "notes": "Use when backend already exists, generates API client, React Query hooks, components, and pages"
+      },
+      {
+        "name": "fullstack-feature",
+        "description": "Create complete end-to-end feature across backend and frontend",
+        "status": "active",
+        "location": ".claude/skills/fullstack-feature",
+        "notes": "Orchestrates complete CRUD feature creation with planning phase, database choice decision tree, and comprehensive implementation across all layers"
+      },
+      {
+        "name": "api-contract",
+        "description": "Ensure type-safe API contracts between backend and frontend",
+        "status": "planned",
+        "location": ".claude/skills/api-contract",
+        "notes": "Verify OpenAPI schema matches frontend usage, suggest improvements"
+      },
+      {
+        "name": "deploy",
+        "description": "Deployment automation for various platforms",
+        "status": "planned",
+        "location": ".claude/skills/deploy",
+        "notes": "Support Docker, AWS ECS, Vercel, and other platforms"
+      }
+    ]
+  },
+  "documentation": {
+    "root": [
+      "CLAUDE.md",
+      "README.md",
+      "GETTING_STARTED.md",
+      "CLAUDE_CODE_BEST_PRACTICES.md"
+    ],
+    "architecture": [
+      "docs/ARCHITECTURE.md",
+      "docs/FULLSTACK_WORKFLOW.md"
+    ],
+    "patterns": [
+      "docs/prompts/integration-patterns.md",
+      "docs/prompts/CLAUDE_PROJECT_SETUP.md"
+    ],
+    "backend": [
+      "backend/CLAUDE.md",
+      "backend/docs/FEATURE_WORKFLOW.md",
+      "backend/docs/prompts/backend-patterns.md"
+    ],
+    "frontend": [
+      "frontend/CLAUDE.md",
+      "frontend/docs/FEATURE_WORKFLOW.md",
+      "frontend/docs/prompts/frontend-patterns.md"
+    ]
+  },
+  "development": {
+    "backend": {
+      "port": 8000,
+      "url": "http://localhost:8000",
+      "docs": "http://localhost:8000/docs",
+      "openapi": "http://localhost:8000/openapi.json"
+    },
+    "frontend": {
+      "port": 5173,
+      "url": "http://localhost:5173"
+    },
+    "databases": {
+      "postgresql": {
+        "port": 5432,
+        "host": "localhost",
+        "database": "saas_boilerplate"
+      },
+      "mongodb": {
+        "port": 27017,
+        "host": "localhost"
+      }
+    },
+    "tools": {
+      "pgadmin": {
+        "port": 5050,
+        "url": "http://localhost:5050",
+        "enabled_with_profile": "tools"
+      },
+      "mongo_express": {
+        "port": 8081,
+        "url": "http://localhost:8081",
+        "enabled_with_profile": "tools"
+      }
+    }
+  },
+  "workflows": {
+    "type_generation": {
+      "command": "cd frontend && npm run generate:types",
+      "trigger": "After backend schema changes",
+      "source": "http://localhost:8000/openapi.json",
+      "output": "frontend/src/types/generated/api.ts"
+    },
+    "backend_first": {
+      "steps": [
+        "Create models (fastapi-model)",
+        "Create migration (fastapi-migration)",
+        "Add permissions (fastapi-permission)",
+        "Create endpoints (fastapi-endpoint)",
+        "Write tests (fastapi-test)",
+        "Generate frontend types",
+        "Create frontend integration (api-integration)",
+        "Build UI (react-form, react-component, react-page)"
+      ]
+    },
+    "frontend_first": {
+      "steps": [
+        "Create mock data",
+        "Build components (react-component)",
+        "Build forms (react-form)",
+        "Test UX flows",
+        "Define backend contract",
+        "Implement backend (fastapi-endpoint)",
+        "Connect API (api-integration)"
+      ]
+    }
+  },
+  "best_practices": {
+    "token_optimization": [
+      "Use references instead of repeating documentation",
+      "Use skills for common patterns",
+      "Start new sessions for unrelated features",
+      "Use Plan Mode for complex features"
+    ],
+    "model_selection": {
+      "sonnet": "Default for most tasks, fast and cost-effective",
+      "opus": "Complex problems, debugging, architectural decisions"
+    },
+    "type_safety": [
+      "Always regenerate types after backend schema changes",
+      "Never manually edit generated types",
+      "Use generated Permission enum in frontend"
+    ],
+    "security": [
+      "Backend enforces permissions (security boundary)",
+      "Frontend checks permissions for UX only",
+      "Never commit sensitive data (.env files)",
+      "Use httpOnly cookies in production (not localStorage)"
+    ]
+  },
+  "references": {
+    "backend_example": "backend/app/api/v1/endpoints/users.py",
+    "frontend_example": "frontend/src/features/auth/",
+    "model_example": "backend/app/models/user.py",
+    "component_example": "frontend/src/features/auth/components/",
+    "form_example": "frontend/src/features/auth/components/LoginForm.tsx"
+  }
+}
