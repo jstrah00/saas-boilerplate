@@ -6,13 +6,13 @@ Detailed patterns for integrating frontend with backend API, including authentic
 
 ### Base Setup
 
-**File**: `frontend/src/lib/api-client.ts`
+**File**: `frontend/src/api/client.ts`
 
 ```typescript
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 export const apiClient = axios.create({
   baseURL: `${API_BASE_URL}/api/v1`,
@@ -92,10 +92,10 @@ apiClient.interceptors.response.use(
 
 ```bash
 # API URL (no trailing slash)
-VITE_API_URL=http://localhost:8000
+VITE_API_BASE_URL=http://localhost:8000
 
 # Production
-# VITE_API_URL=https://api.example.com
+# VITE_API_BASE_URL=https://api.example.com
 ```
 
 ## Authentication Integration
@@ -105,7 +105,7 @@ VITE_API_URL=http://localhost:8000
 **File**: `frontend/src/features/auth/api/auth.ts`
 
 ```typescript
-import { apiClient } from '@/lib/api-client';
+import { apiClient } from '@/api/client';
 import type { LoginRequest, TokenResponse } from '@/types/generated/api';
 
 export const login = async (credentials: LoginRequest): Promise<TokenResponse> => {

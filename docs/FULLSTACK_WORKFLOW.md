@@ -143,7 +143,7 @@ Use `fastapi-endpoint` skill:
 - `backend/app/schemas/product.py` - Pydantic schemas
 - `backend/app/repositories/product_repository.py` - Database queries
 - `backend/app/services/product_service.py` - Business logic
-- `backend/app/api/v1/endpoints/products.py` - REST routes
+- `backend/app/api/v1/products.py` - REST routes
 
 **2.5 Write Tests**
 
@@ -630,7 +630,7 @@ console.log(localStorage.getItem('access_token'));
 
 2. Check endpoint required permissions:
    ```python
-   # backend/app/api/v1/endpoints/products.py
+   # backend/app/api/v1/products.py
    @require_permissions(Permission.PRODUCTS_WRITE)  # ← Requires this
    ```
 

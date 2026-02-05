@@ -45,12 +45,17 @@ claude-code --model opus
 
 **Decision Tree**:
 ```
-Is the task complex/ambiguous/novel?
-├─ Yes → Use Opus
-└─ No → Use Sonnet
-    ├─ Is Sonnet struggling after 2-3 attempts?
-    │   └─ Yes → Switch to Opus
-    └─ No → Continue with Sonnet
+Choose OPUS if the task involves:
+├─ Modifying 3+ services/systems → Opus
+├─ Architectural decisions (patterns, structure) → Opus
+├─ Debugging without clear cause → Opus
+├─ Novel problems (no existing pattern) → Opus
+└─ Otherwise → Sonnet
+    ├─ Following existing patterns → Sonnet
+    ├─ Standard CRUD/forms → Sonnet
+    ├─ Clear bug fixes → Sonnet
+    └─ Is Sonnet struggling after 2-3 attempts?
+        └─ Yes → Switch to Opus
 ```
 
 ## B. Plan Mode
@@ -61,18 +66,18 @@ Plan Mode lets Claude explore your codebase, design an implementation approach, 
 
 ### When to Use Plan Mode
 
-**Always use Plan Mode for**:
-- ✅ New features affecting 3+ files
+**Plan Mode is MANDATORY for**:
+- ✅ New features affecting 3+ files (non-negotiable)
 - ✅ Architectural changes (new patterns, refactoring)
 - ✅ Features with multiple valid approaches
 - ✅ When you're unsure of the best approach
 - ✅ Complex business logic requiring design review
 
-**Skip Plan Mode for**:
+**Skip Plan Mode ONLY for**:
 - ✅ Single-file changes (typos, small tweaks)
-- ✅ Following existing patterns (e.g., adding another CRUD endpoint)
+- ✅ Following existing patterns with clear requirements
 - ✅ Clear, specific instructions ("Fix bug on line 42")
-- ✅ Simple component additions
+- ✅ Simple component additions (1-2 files max)
 
 ### How to Use Plan Mode
 
@@ -148,7 +153,10 @@ When reviewing a plan, check:
 
 ### Pro Plan Limits
 
-- **Token Budget**: ~200K tokens per conversation
+- **Token Budget**:
+  - Per conversation: ~200K tokens maximum
+  - Monthly limit (Pro plan): ~500K tokens total
+  - Strategy: Use 2-3 conversations per feature to stay within monthly budget
 - **Context Window**: Unlimited via auto-summarization
 - **Usage**: Visible in UI during session
 
@@ -508,24 +516,41 @@ Generates: Page component, adds route, handles navigation
 Time: ~1 min
 ```
 
-### Root Skills (Planned)
+### Root Skills
 
-**fullstack-feature** - Complete E2E feature
+⚠️ **Note**: Skills marked as **(PLANNED)** are not yet available. Only invoke skills marked as **(ACTIVE)**.
+
+**backend-first** - Backend-first workflow (ACTIVE)
+```
+Use: "Implement Product feature using backend-first workflow"
+Generates: Complete backend (models, migrations, endpoints, tests) + frontend integration
+Time: ~10 min
+```
+
+**api-to-ui** - API to UI integration (ACTIVE)
+```
+Use: "Create frontend UI for existing Product endpoints"
+Generates: API client, React Query hooks, components, forms, pages
+Time: ~5 min
+```
+
+**fullstack-feature** - Complete E2E feature (ACTIVE)
 ```
 Use: "Create complete Product catalog (backend + frontend)"
-Status: Planned
+Generates: Database models, API, frontend UI, routing, permissions
+Time: ~15 min
 ```
 
-**api-integration** - Type-safe API contracts
+**api-contract** - Type-safe API contracts (PLANNED)
 ```
 Use: "Ensure Product API contract matches frontend usage"
-Status: Planned
+Status: Planned - not yet available
 ```
 
-**deploy** - Deployment automation
+**deploy** - Deployment automation (PLANNED)
 ```
 Use: "Deploy to production"
-Status: Planned
+Status: Planned - not yet available
 ```
 
 ### When to Use Skills vs Manual Prompts

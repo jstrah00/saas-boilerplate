@@ -78,9 +78,9 @@ Upload these files to provide context (click "Add content" → "Upload files"):
 - `frontend/docs/FEATURE_WORKFLOW.md` - Frontend workflow
 - `frontend/docs/prompts/frontend-patterns.md` - Frontend patterns
 
-**Optional** (if you want Claude to reference actual code):
+**Optional** (upload if you want Claude to reference actual implementation patterns and code examples):
 - Example models: `backend/app/models/user.py`
-- Example endpoints: `backend/app/api/v1/endpoints/users.py`
+- Example endpoints: `backend/app/api/v1/users.py`
 - Example components: `frontend/src/features/auth/components/*`
 
 **Total**: ~8-12 files, well within Project limits

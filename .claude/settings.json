@@ -37,12 +37,6 @@
         "status": "active",
         "location": "backend/.claude/skills/fastapi-test"
       },
-      {
-        "name": "fastapi-feature",
-        "description": "Create complete backend feature with all layers",
-        "status": "active",
-        "location": "backend/.claude/skills/fastapi-feature"
-      }
     ],
     "frontend": [
       {

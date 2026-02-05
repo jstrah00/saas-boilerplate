@@ -21,9 +21,11 @@ This is the **root orchestration layer** connecting backend (FastAPI) and fronte
 
 ## Claude Code Skills
 
-- **Backend** (6 skills): `fastapi-endpoint`, `fastapi-model`, `fastapi-migration`, `fastapi-permission`, `fastapi-test`, `fastapi-feature`
+- **Backend** (5 skills): `fastapi-endpoint`, `fastapi-model`, `fastapi-migration`, `fastapi-permission`, `fastapi-test`
 - **Frontend** (5 skills): `react-component`, `react-form`, `api-integration`, `react-feature`, `react-page`
-- **Root** (3 planned): `fullstack-feature`, `api-integration`, `deploy` (see `.claude/settings.json`)
+- **Root** (5 skills):
+  - Active: `backend-first`, `api-to-ui`, `fullstack-feature`
+  - Planned: `api-contract`, `deploy`
 
 ## Development Workflow
 

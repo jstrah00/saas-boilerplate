@@ -50,7 +50,7 @@ This monorepo provides a complete foundation for building SaaS applications with
 - ✅ **Permission checks** (backend enforces, frontend UX)
 - ✅ **Error handling** (backend exceptions → frontend toasts)
 - ✅ **Docker Compose** for local development
-- ✅ **Claude Code skills** (11 skills for rapid development)
+- ✅ **Claude Code skills** (13 skills for rapid development)
 
 ## Quick Start
 
@@ -354,25 +354,28 @@ This boilerplate is optimized for development with Claude Code via skills and co
 
 ### Available Skills
 
-**Backend** (6 skills):
+**Backend** (5 skills):
 - `/fastapi-endpoint` - Complete CRUD with all layers
 - `/fastapi-model` - SQLAlchemy models
 - `/fastapi-migration` - Alembic migrations
 - `/fastapi-permission` - Add permissions to RBAC
 - `/fastapi-test` - pytest tests
-- `/fastapi-feature` - Complete backend feature
 
 **Frontend** (5 skills):
-- `/react-component` - TypeScript components
-- `/react-form` - Zod + react-hook-form
+- `/react-component` - TypeScript components with shadcn/ui
+- `/react-form` - Zod + react-hook-form validation
 - `/api-integration` - API + TanStack Query hooks
 - `/react-feature` - Complete frontend feature
 - `/react-page` - Page with routing
 
-**Root** (3 planned):
-- `/fullstack-feature` - Complete E2E feature (planned)
-- `/api-integration` - Type-safe contracts (planned)
-- `/deploy` - Deployment automation (planned)
+**Root** (5 skills):
+- **Active:**
+  - `/backend-first` - Backend-first fullstack workflow
+  - `/api-to-ui` - Frontend UI for existing backend APIs
+  - `/fullstack-feature` - Complete E2E feature
+- **Planned:**
+  - `/api-contract` - Type-safe API contracts
+  - `/deploy` - Deployment automation
 
 ### Quick Example
 

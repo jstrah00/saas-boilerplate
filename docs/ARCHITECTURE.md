@@ -245,7 +245,7 @@ class User(Base):
      │                          │
 ```
 
-**Frontend Implementation**: Axios interceptor automatically retries failed requests after refresh (see `frontend/src/lib/api-client.ts`)
+**Frontend Implementation**: Axios interceptor automatically retries failed requests after refresh (see `frontend/src/api/client.ts`)
 
 ### Storage & Security
 
@@ -282,7 +282,7 @@ class Permission(str, Enum):
 
 **Endpoint Protection**:
 ```python
-# backend/app/api/v1/endpoints/users.py
+# backend/app/api/v1/users.py
 from app.common.dependencies import require_permissions
 
 @router.get("/users/{user_id}")
@@ -498,7 +498,7 @@ if not user:
 
 ### Frontend Error Handling
 
-**Axios Interceptor** (`frontend/src/lib/api-client.ts`):
+**Axios Interceptor** (`frontend/src/api/client.ts`):
 ```typescript
 apiClient.interceptors.response.use(
   (response) => response,
