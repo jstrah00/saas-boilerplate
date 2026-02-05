@@ -10,16 +10,16 @@ Two primary approaches:
 2. **Frontend-First** - Design UI/UX first, then implement backend to support it
 
 **When to use Backend-First**:
-- ✅ Data-driven features (CRUD, dashboards, reports)
-- ✅ Complex business logic or validation
-- ✅ Features requiring database design
-- ✅ Multiple frontend consumers (web + mobile)
+- [X] Data-driven features (CRUD, dashboards, reports)
+- [X] Complex business logic or validation
+- [X] Features requiring database design
+- [X] Multiple frontend consumers (web + mobile)
 
 **When to use Frontend-First**:
-- ✅ UI/UX prototyping or experimentation
-- ✅ Design-heavy features (landing pages, marketing)
-- ✅ Features with unclear requirements (iterate on UI first)
-- ✅ Visual components with minimal backend needs
+- [X] UI/UX prototyping or experimentation
+- [X] Design-heavy features (landing pages, marketing)
+- [X] Features with unclear requirements (iterate on UI first)
+- [X] Visual components with minimal backend needs
 
 ## Prerequisites
 
@@ -40,22 +40,22 @@ User: "I need a product catalog feature with categories, pricing tiers, and inve
 Claude (Project): Here's a plan...
 
 1. Database Schema
-   - Product model: id, name, description, price, sku, category_id, stock_quantity
-   - Category model: id, name, parent_id (self-referential)
-   - PricingTier model: id, product_id, min_quantity, price
+ - Product model: id, name, description, price, sku, category_id, stock_quantity
+ - Category model: id, name, parent_id (self-referential)
+ - PricingTier model: id, product_id, min_quantity, price
 
 2. API Endpoints
-   - GET /products (list, filter, paginate)
-   - POST /products (create)
-   - GET /products/{id} (detail)
-   - ...
+ - GET /products (list, filter, paginate)
+ - POST /products (create)
+ - GET /products/{id} (detail)
+ - ...
 
 3. Permissions Needed
-   - PRODUCTS_READ, PRODUCTS_WRITE, PRODUCTS_DELETE
-   - CATEGORIES_MANAGE
+ - PRODUCTS_READ, PRODUCTS_WRITE, PRODUCTS_DELETE
+ - CATEGORIES_MANAGE
 
 4. Frontend Components
-   - ProductList, ProductForm, CategoryTree, InventoryBadge
+ - ProductList, ProductForm, CategoryTree, InventoryBadge
 
 [Detailed prompts for each phase...]
 ```
@@ -263,9 +263,9 @@ Use `react-page` skill:
 ```bash
 # Backend API
 curl -X POST http://localhost:8000/api/v1/products \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Test Product", "price": 29.99, ...}'
+ -H "Authorization: Bearer $TOKEN" \
+ -H "Content-Type: application/json" \
+ -d '{"name": "Test Product", "price": 29.99, ...}'
 
 # Frontend
 # Open http://localhost:5173/products
@@ -274,18 +274,18 @@ curl -X POST http://localhost:8000/api/v1/products \
 
 **5.2 Check Integration Points**:
 
-- ✅ **Types**: Frontend uses generated types (no `any`)
-- ✅ **Permissions**: Backend enforces, frontend shows/hides UI
-- ✅ **Errors**: Backend exceptions → Frontend toasts
-- ✅ **Loading**: TanStack Query manages loading states
-- ✅ **Validation**: Zod schemas match Pydantic schemas
+- [X] **Types**: Frontend uses generated types (no `any`)
+- [X] **Permissions**: Backend enforces, frontend shows/hides UI
+- [X] **Errors**: Backend exceptions → Frontend toasts
+- [X] **Loading**: TanStack Query manages loading states
+- [X] **Validation**: Zod schemas match Pydantic schemas
 
 **5.3 Network Tab Verification**:
 
-- ✅ Requests include `Authorization: Bearer ...`
-- ✅ 401 responses trigger token refresh
-- ✅ Error responses show in toast notifications
-- ✅ Pagination params sent correctly
+- [X] Requests include `Authorization: Bearer ...`
+- [X] 401 responses trigger token refresh
+- [X] Error responses show in toast notifications
+- [X] Pagination params sent correctly
 
 ### Phase 6: Commit & Document
 
@@ -304,10 +304,10 @@ git diff
 
 # Or manually:
 git add backend/app/models/product.py \
-        backend/app/schemas/product.py \
-        backend/app/repositories/product_repository.py \
-        ...
-        frontend/src/features/products/
+ backend/app/schemas/product.py \
+ backend/app/repositories/product_repository.py \
+ ...
+ frontend/src/features/products/
 
 git commit -m "Add product catalog feature
 
@@ -330,14 +330,14 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```typescript
 // frontend/src/features/products/mocks/products.ts
 export const mockProducts = [
-  {
-    id: '1',
-    name: 'Widget Pro',
-    price: 29.99,
-    stock: 45,
-    category: 'Electronics'
-  },
-  // ... more mock data
+ {
+ id: '1',
+ name: 'Widget Pro',
+ price: 29.99,
+ stock: 45,
+ category: 'Electronics'
+ },
+ // ... more mock data
 ];
 ```
 
@@ -364,17 +364,17 @@ Based on frontend needs, define:
 ```typescript
 // Document what backend needs to provide
 interface ProductAPI {
-  // GET /products?page=1&size=10&category=electronics
-  getProducts(params: {
-    page?: number;
-    size?: number;
-    category?: string;
-  }): Promise<{ items: Product[]; total: number }>;
+ // GET /products?page=1&size=10&category=electronics
+ getProducts(params: {
+ page?: number;
+ size?: number;
+ category?: string;
+ }): Promise<{ items: Product[]; total: number }>;
 
-  // POST /products
-  createProduct(data: ProductCreate): Promise<Product>;
+ // POST /products
+ createProduct(data: ProductCreate): Promise<Product>;
 
-  // ...
+ // ...
 }
 ```
 
@@ -413,10 +413,10 @@ Same as Backend-First Phase 5.
 ### Stage 1: Planning in Claude.ai Project
 
 **Why Use Claude.ai Project First?**
-- 📚 Unlimited context with knowledge files
+- Unlimited context with knowledge files
 - 🧠 Better for complex planning and architecture
-- 📝 Can reference entire codebase patterns
-- 💡 Generates detailed implementation prompts
+- Can reference entire codebase patterns
+- Generates detailed implementation prompts
 
 **Setup**: See `docs/prompts/CLAUDE_PROJECT_SETUP.md`
 
@@ -432,20 +432,20 @@ I'll design this feature following your boilerplate patterns.
 ## Database Schema
 
 1. Organization Model
-   - id: UUID (PK)
-   - name: str
-   - slug: str (unique)
-   - tier: Enum['free', 'pro', 'enterprise']
-   - created_by: UUID (FK to users)
+ - id: UUID (PK)
+ - name: str
+ - slug: str (unique)
+ - tier: Enum['free', 'pro', 'enterprise']
+ - created_by: UUID (FK to users)
 
 2. OrganizationMember Model (junction table)
-   - org_id: UUID (FK)
-   - user_id: UUID (FK)
-   - role: Enum['owner', 'admin', 'member']
+ - org_id: UUID (FK)
+ - user_id: UUID (FK)
+ - role: Enum['owner', 'admin', 'member']
 
 3. Migration considerations:
-   - Add org_id to existing tables that need multi-tenancy
-   - Create indexes on org_id for query performance
+ - Add org_id to existing tables that need multi-tenancy
+ - Create indexes on org_id for query performance
 
 ## Permissions Required
 - ORGS_READ, ORGS_WRITE, ORGS_DELETE
@@ -530,10 +530,10 @@ Include TanStack Query hooks with proper cache invalidation."
 6. Continue with remaining prompts
 
 **Benefits**:
-- ✅ Detailed plan reduces back-and-forth in Code
-- ✅ Prompts optimized for Claude Code execution
-- ✅ Token-efficient (Code doesn't re-plan)
-- ✅ Consistent with boilerplate patterns
+- [X] Detailed plan reduces back-and-forth in Code
+- [X] Prompts optimized for Claude Code execution
+- [X] Token-efficient (Code doesn't re-plan)
+- [X] Consistent with boilerplate patterns
 
 ## Common Scenarios
 
@@ -586,7 +586,7 @@ Include TanStack Query hooks with proper cache invalidation."
 ```typescript
 // Error: Type 'string' is not assignable to type 'number'
 const product: ProductResponse = {
-  price: "29.99"  // ❌ Backend sends string, frontend expects number
+ price: "29.99" // [-] Backend sends string, frontend expects number
 };
 ```
 
@@ -620,19 +620,19 @@ console.log(localStorage.getItem('access_token'));
 
 **Debug**:
 1. Check user's permissions:
-   ```bash
-   # In backend shell
-   docker compose exec backend python
-   >>> from app.models.user import User
-   >>> user = await session.get(User, "user-uuid")
-   >>> print([p.name for r in user.roles for p in r.permissions])
-   ```
+ ```bash
+ # In backend shell
+ docker compose exec backend python
+ >>> from app.models.user import User
+ >>> user = await session.get(User, "user-uuid")
+ >>> print([p.name for r in user.roles for p in r.permissions])
+ ```
 
 2. Check endpoint required permissions:
-   ```python
-   # backend/app/api/v1/products.py
-   @require_permissions(Permission.PRODUCTS_WRITE)  # ← Requires this
-   ```
+ ```python
+ # backend/app/api/v1/products.py
+ @require_permissions(Permission.PRODUCTS_WRITE) # ← Requires this
+ ```
 
 **Solution**: Add permission to user's role (see `backend/docs/FEATURE_WORKFLOW.md`)
 
@@ -644,7 +644,7 @@ console.log(localStorage.getItem('access_token'));
 ```python
 # backend/app/core/config.py
 BACKEND_CORS_ORIGINS = [
-    "http://localhost:5173",  # ← Must include frontend URL
+ "http://localhost:5173", # ← Must include frontend URL
 ]
 ```
 
@@ -671,20 +671,20 @@ curl http://localhost:8000/docs
 ## Best Practices
 
 ### DO
-- ✅ Use skills (`/fastapi-endpoint`, `/react-form`) for consistency
-- ✅ Generate types after every backend schema change
-- ✅ Write tests for backend endpoints before frontend integration
-- ✅ Use Claude.ai Project for complex planning, Claude Code for implementation
-- ✅ Commit backend and frontend together (atomic feature)
-- ✅ Check permissions work on both backend (enforce) and frontend (UX)
+- [X] Use skills (`/fastapi-endpoint`, `/react-form`) for consistency
+- [X] Generate types after every backend schema change
+- [X] Write tests for backend endpoints before frontend integration
+- [X] Use Claude.ai Project for complex planning, Claude Code for implementation
+- [X] Commit backend and frontend together (atomic feature)
+- [X] Check permissions work on both backend (enforce) and frontend (UX)
 
 ### DON'T
-- ❌ Skip type generation (leads to runtime errors)
-- ❌ Implement frontend before backend contract is stable (causes rework)
-- ❌ Manually edit generated types
-- ❌ Skip migration after model changes
-- ❌ Rely on frontend permission checks for security
-- ❌ Commit backend without regenerating frontend types
+- [-] Skip type generation (leads to runtime errors)
+- [-] Implement frontend before backend contract is stable (causes rework)
+- [-] Manually edit generated types
+- [-] Skip migration after model changes
+- [-] Rely on frontend permission checks for security
+- [-] Commit backend without regenerating frontend types
 
 ### Token Optimization
 
@@ -701,4 +701,4 @@ curl http://localhost:8000/docs
 - **New feature?** → Choose Backend-First or Frontend-First approach
 - **Complex planning?** → Use Claude.ai Project first (see `docs/prompts/CLAUDE_PROJECT_SETUP.md`)
 - **Need code examples?** → See `docs/prompts/integration-patterns.md`
-- **Using Claude Code?** → Read `CLAUDE_CODE_BEST_PRACTICES.md` ⭐
+- **Using Claude Code?** → Read `CLAUDE_CODE_BEST_PRACTICES.md`

@@ -10,10 +10,10 @@ Configure a Claude.ai Project for fullstack feature planning and architecture de
 2. **Claude Code** (Implementation) - Execute implementation prompts
 
 **Benefits**:
-- 📚 Unlimited context via knowledge files
+- Unlimited context via knowledge files
 - 🧠 Better strategic planning
-- 📝 Generates optimized prompts for Claude Code
-- 💡 References entire codebase patterns
+- Generates optimized prompts for Claude Code
+- References entire codebase patterns
 - ⚡ Token-efficient implementation
 
 ## One-Time Setup
@@ -118,7 +118,7 @@ Integration:
 [... detailed analysis based on uploaded docs]"
 ```
 
-If Claude can reference uploaded files, setup is complete! ✅
+If Claude can reference uploaded files, setup is complete! [X]
 
 ## Usage Example
 
@@ -257,46 +257,46 @@ This feature adds a complete product catalog with hierarchical categories, inven
 Create four SQLAlchemy models for the product catalog:
 
 1. Category model:
-   - id (UUID, PK)
-   - name (String, max 100)
-   - slug (String, unique, indexed)
-   - parent_id (UUID, FK to categories, nullable) - Self-referential for hierarchy
-   - sort_order (Integer)
-   - children relationship (back_populates)
-   - created_at, updated_at
+ - id (UUID, PK)
+ - name (String, max 100)
+ - slug (String, unique, indexed)
+ - parent_id (UUID, FK to categories, nullable) - Self-referential for hierarchy
+ - sort_order (Integer)
+ - children relationship (back_populates)
+ - created_at, updated_at
 
 2. Product model:
-   - id (UUID, PK)
-   - name (String, max 200, indexed)
-   - description (Text, optional)
-   - sku (String, unique, indexed)
-   - base_price (Decimal(10,2))
-   - stock_quantity (Integer, default 0)
-   - low_stock_threshold (Integer, default 10)
-   - category_id (UUID, FK to categories)
-   - is_active (Boolean, default True)
-   - created_by (UUID, FK to users)
-   - category relationship
-   - pricing_tiers relationship (cascade delete)
-   - images relationship (cascade delete)
-   - created_at, updated_at
+ - id (UUID, PK)
+ - name (String, max 200, indexed)
+ - description (Text, optional)
+ - sku (String, unique, indexed)
+ - base_price (Decimal(10,2))
+ - stock_quantity (Integer, default 0)
+ - low_stock_threshold (Integer, default 10)
+ - category_id (UUID, FK to categories)
+ - is_active (Boolean, default True)
+ - created_by (UUID, FK to users)
+ - category relationship
+ - pricing_tiers relationship (cascade delete)
+ - images relationship (cascade delete)
+ - created_at, updated_at
 
 3. PricingTier model:
-   - id (UUID, PK)
-   - product_id (UUID, FK to products)
-   - min_quantity (Integer)
-   - price (Decimal(10,2))
-   - UniqueConstraint(product_id, min_quantity)
-   - product relationship
+ - id (UUID, PK)
+ - product_id (UUID, FK to products)
+ - min_quantity (Integer)
+ - price (Decimal(10,2))
+ - UniqueConstraint(product_id, min_quantity)
+ - product relationship
 
 4. ProductImage model:
-   - id (UUID, PK)
-   - product_id (UUID, FK to products)
-   - url (String)
-   - is_primary (Boolean, default False)
-   - sort_order (Integer)
-   - product relationship
-   - created_at
+ - id (UUID, PK)
+ - product_id (UUID, FK to products)
+ - url (String)
+ - is_primary (Boolean, default False)
+ - sort_order (Integer)
+ - product relationship
+ - created_at
 
 Use /fastapi-model skill or implement manually.
 ```
@@ -337,29 +337,29 @@ Use /fastapi-permission skill.
 Create product CRUD endpoints:
 
 - GET /products - List with filters:
-  - page, size (pagination)
-  - category_id (filter by category)
-  - min_price, max_price (price range)
-  - search (search name, description, sku)
-  - in_stock (boolean, only show items with stock > 0)
-  Returns: Paginated list with category, image count, lowest price tier
-  Permission: PRODUCTS_READ (all users)
+ - page, size (pagination)
+ - category_id (filter by category)
+ - min_price, max_price (price range)
+ - search (search name, description, sku)
+ - in_stock (boolean, only show items with stock > 0)
+ Returns: Paginated list with category, image count, lowest price tier
+ Permission: PRODUCTS_READ (all users)
 
 - GET /products/{id} - Get single product
-  Includes: category, pricing_tiers (sorted by min_quantity), images (sorted by sort_order)
-  Permission: PRODUCTS_READ
+ Includes: category, pricing_tiers (sorted by min_quantity), images (sorted by sort_order)
+ Permission: PRODUCTS_READ
 
 - POST /products - Create product
-  Body: ProductCreate schema (name, description, sku, base_price, stock_quantity, category_id, pricing_tiers, low_stock_threshold)
-  Returns: Created product
-  Permission: PRODUCTS_WRITE
+ Body: ProductCreate schema (name, description, sku, base_price, stock_quantity, category_id, pricing_tiers, low_stock_threshold)
+ Returns: Created product
+ Permission: PRODUCTS_WRITE
 
 - PUT /products/{id} - Update product
-  Body: ProductUpdate schema (all fields optional)
-  Permission: PRODUCTS_WRITE
+ Body: ProductUpdate schema (all fields optional)
+ Permission: PRODUCTS_WRITE
 
 - DELETE /products/{id} - Soft delete (set is_active = False)
-  Permission: PRODUCTS_DELETE
+ Permission: PRODUCTS_DELETE
 
 Create schemas (ProductCreate, ProductUpdate, ProductResponse with nested tiers/images),
 repository, service, and router following project conventions.
@@ -374,24 +374,24 @@ Use /fastapi-endpoint skill.
 Create category endpoints:
 
 - GET /categories - List all categories as tree structure
-  Returns: Nested JSON with children
-  Permission: Public (no auth required)
+ Returns: Nested JSON with children
+ Permission: Public (no auth required)
 
 - GET /categories/{slug} - Get category by slug
-  Includes: parent, children, product_count
-  Permission: Public
+ Includes: parent, children, product_count
+ Permission: Public
 
 - POST /categories - Create category
-  Body: CategoryCreate (name, slug, parent_id, sort_order)
-  Permission: CATEGORIES_MANAGE
+ Body: CategoryCreate (name, slug, parent_id, sort_order)
+ Permission: CATEGORIES_MANAGE
 
 - PUT /categories/{id} - Update category
-  Body: CategoryUpdate
-  Permission: CATEGORIES_MANAGE
+ Body: CategoryUpdate
+ Permission: CATEGORIES_MANAGE
 
 - DELETE /categories/{id} - Delete category
-  Validation: Ensure no products assigned, no child categories
-  Permission: CATEGORIES_MANAGE
+ Validation: Ensure no products assigned, no child categories
+ Permission: CATEGORIES_MANAGE
 
 Use /fastapi-endpoint skill.
 ```
@@ -490,27 +490,27 @@ Use /api-integration skill.
 Create product components:
 
 1. ProductCard (src/features/products/components/ProductCard.tsx)
-   - Display: image, name, price (with tiers if available), stock badge
-   - Stock badge: green if > threshold, yellow if <= threshold, red if 0
-   - Click navigates to product detail
-   - Show edit/delete buttons if user has PRODUCTS_WRITE permission
+ - Display: image, name, price (with tiers if available), stock badge
+ - Stock badge: green if > threshold, yellow if <= threshold, red if 0
+ - Click navigates to product detail
+ - Show edit/delete buttons if user has PRODUCTS_WRITE permission
 
 2. ProductFilters (src/features/products/components/ProductFilters.tsx)
-   - Category tree selector (from useCategories hook)
-   - Price range slider (min/max inputs)
-   - Search input (debounced)
-   - "In Stock Only" checkbox
-   - "Clear Filters" button
+ - Category tree selector (from useCategories hook)
+ - Price range slider (min/max inputs)
+ - Search input (debounced)
+ - "In Stock Only" checkbox
+ - "Clear Filters" button
 
 3. ImageGallery (src/features/products/components/ImageGallery.tsx)
-   - Display product images with primary image first
-   - Click to open lightbox/modal
-   - If in edit mode, show delete buttons and primary selector
+ - Display product images with primary image first
+ - Click to open lightbox/modal
+ - If in edit mode, show delete buttons and primary selector
 
 4. PricingTierTable (src/features/products/components/PricingTierTable.tsx)
-   - Display tiers as table: Quantity | Price per Unit
-   - If in edit mode, allow adding/removing tiers
-   - Validate: min_quantity must be > 0 and unique
+ - Display tiers as table: Quantity | Price per Unit
+ - If in edit mode, allow adding/removing tiers
+ - Validate: min_quantity must be > 0 and unique
 
 Use /react-component skill for each.
 ```
@@ -546,29 +546,29 @@ Use /react-form skill.
 Create product pages:
 
 1. ProductListPage (src/features/products/pages/ProductListPage.tsx)
-   Route: /products
-   - ProductFilters component
-   - Grid of ProductCard components
-   - Pagination
-   - Loading skeleton
-   - Empty state if no products
-   - "Add Product" button (permission: PRODUCTS_WRITE) → opens ProductForm modal
+ Route: /products
+ - ProductFilters component
+ - Grid of ProductCard components
+ - Pagination
+ - Loading skeleton
+ - Empty state if no products
+ - "Add Product" button (permission: PRODUCTS_WRITE) → opens ProductForm modal
 
 2. ProductDetailPage (src/features/products/pages/ProductDetailPage.tsx)
-   Route: /products/:id
-   - ImageGallery
-   - Product info (name, description, SKU, price)
-   - PricingTierTable (read-only)
-   - Stock badge
-   - Category breadcrumb
-   - Edit button (permission: PRODUCTS_WRITE) → opens ProductForm modal
-   - Delete button (permission: PRODUCTS_DELETE) → confirmation dialog
+ Route: /products/:id
+ - ImageGallery
+ - Product info (name, description, SKU, price)
+ - PricingTierTable (read-only)
+ - Stock badge
+ - Category breadcrumb
+ - Edit button (permission: PRODUCTS_WRITE) → opens ProductForm modal
+ - Delete button (permission: PRODUCTS_DELETE) → confirmation dialog
 
 3. AdminProductsPage (src/features/products/pages/AdminProductsPage.tsx)
-   Route: /admin/products
-   - Table view of products with inline edit/delete
-   - Bulk actions (delete multiple)
-   - Permission: PRODUCTS_WRITE (redirect if missing)
+ Route: /admin/products
+ - Table view of products with inline edit/delete
+ - Bulk actions (delete multiple)
+ - Permission: PRODUCTS_WRITE (redirect if missing)
 
 Add routes to router configuration with lazy loading.
 
@@ -582,20 +582,20 @@ Use /react-page skill.
 Create category management:
 
 1. CategoryTree component (src/features/products/components/CategoryTree.tsx)
-   - Display hierarchical category tree
-   - Expand/collapse nodes
-   - If in manage mode, show edit/delete/add child buttons
-   - Drag-and-drop to reorder (update sort_order)
+ - Display hierarchical category tree
+ - Expand/collapse nodes
+ - If in manage mode, show edit/delete/add child buttons
+ - Drag-and-drop to reorder (update sort_order)
 
 2. CategoryForm component (src/features/products/components/CategoryForm.tsx)
-   - Fields: name, slug (auto-generated from name), parent (select from tree)
-   - Validation: slug must be unique, URL-safe
-   - Create/edit modes
+ - Fields: name, slug (auto-generated from name), parent (select from tree)
+ - Validation: slug must be unique, URL-safe
+ - Create/edit modes
 
 3. AdminCategoriesPage (src/features/products/pages/AdminCategoriesPage.tsx)
-   Route: /admin/categories
-   - CategoryTree in manage mode
-   - Permission: CATEGORIES_MANAGE
+ Route: /admin/categories
+ - CategoryTree in manage mode
+ - Permission: CATEGORIES_MANAGE
 
 Use /react-component and /react-page skills.
 ```
@@ -629,36 +629,36 @@ Use /react-component and /react-page skills.
 
 ## Acceptance Criteria
 
-- ✅ Admin can create products with multiple images and pricing tiers
-- ✅ Admin can organize products into hierarchical categories
-- ✅ Users can browse products and filter by category, price, availability
-- ✅ Search works across product name, description, SKU
-- ✅ Stock levels display with visual indicators
-- ✅ Bulk pricing shows correct price per quantity tier
-- ✅ Image gallery works with primary image first
-- ✅ Permissions prevent non-admin from managing products
-- ✅ All backend tests pass
-- ✅ Type safety maintained (no `any` types in frontend)
+- [X] Admin can create products with multiple images and pricing tiers
+- [X] Admin can organize products into hierarchical categories
+- [X] Users can browse products and filter by category, price, availability
+- [X] Search works across product name, description, SKU
+- [X] Stock levels display with visual indicators
+- [X] Bulk pricing shows correct price per quantity tier
+- [X] Image gallery works with primary image first
+- [X] Permissions prevent non-admin from managing products
+- [X] All backend tests pass
+- [X] Type safety maintained (no `any` types in frontend)
 
 ## Potential Issues & Considerations
 
-⚠️ **Image Storage**:
+[!] **Image Storage**:
 - Dev: Local filesystem (./uploads/)
 - Prod: Migrate to S3/CloudFront (add env vars, update storage service)
 
-⚠️ **Category Deletion**:
+[!] **Category Deletion**:
 - Prevent if products assigned (show error)
 - Option: Re-assign products to parent category before deleting
 
-⚠️ **Pricing Tiers**:
+[!] **Pricing Tiers**:
 - Frontend should sort by min_quantity ascending
 - Validate no overlapping/duplicate quantities
 
-⚠️ **Stock Management**:
+[!] **Stock Management**:
 - Current: Manual stock updates
 - Future: Integrate with order system to auto-decrement
 
-⚠️ **Search Performance**:
+[!] **Search Performance**:
 - Add full-text search index if product count > 10K
 - Consider Elasticsearch for advanced search
 
@@ -715,18 +715,18 @@ After adding new patterns or significant features:
 ## Tips
 
 ### DO
-- ✅ Use Projects for complex planning (3+ components, unclear approach)
-- ✅ Upload comprehensive docs (CLAUDE.md, workflows, patterns)
-- ✅ Generate numbered prompts for Claude Code
-- ✅ Test prompts in Code before considering feature complete
-- ✅ Update knowledge files when patterns evolve
+- [X] Use Projects for complex planning (3+ components, unclear approach)
+- [X] Upload comprehensive docs (CLAUDE.md, workflows, patterns)
+- [X] Generate numbered prompts for Claude Code
+- [X] Test prompts in Code before considering feature complete
+- [X] Update knowledge files when patterns evolve
 
 ### DON'T
-- ❌ Use Project for simple tasks (just use Claude Code directly)
-- ❌ Upload entire codebase (selective files only)
-- ❌ Expect Project to execute code (it only plans)
-- ❌ Skip testing prompts in Code
-- ❌ Forget to update docs after major changes
+- [-] Use Project for simple tasks (just use Claude Code directly)
+- [-] Upload entire codebase (selective files only)
+- [-] Expect Project to execute code (it only plans)
+- [-] Skip testing prompts in Code
+- [-] Forget to update docs after major changes
 
 ### When to Skip Projects
 

@@ -6,38 +6,38 @@ This document describes the technical architecture of the fullstack SaaS boilerp
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                         Frontend                             │
-│  React + TypeScript + Vite (localhost:5173)                 │
-│                                                               │
-│  ┌────────────┐  ┌──────────────┐  ┌────────────────┐      │
-│  │ Components │  │ TanStack     │  │ Type-Safe API  │      │
-│  │ (shadcn/ui)│─▶│ Query/Router │─▶│ Client (axios) │      │
-│  └────────────┘  └──────────────┘  └────────┬───────┘      │
-│                                              │               │
+│ Frontend │
+│ React + TypeScript + Vite (localhost:5173) │
+│ │
+│ ┌────────────┐ ┌──────────────┐ ┌────────────────┐ │
+│ │ Components │ │ TanStack │ │ Type-Safe API │ │
+│ │ (shadcn/ui)│─▶│ Query/Router │─▶│ Client (axios) │ │
+│ └────────────┘ └──────────────┘ └────────┬───────┘ │
+│ │ │
 └──────────────────────────────────────────────┼───────────────┘
-                                               │ HTTP + JWT
-                                               ▼
+ │ HTTP + JWT
+ ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                         Backend                              │
-│  FastAPI + Python 3.11+ (localhost:8000)                    │
-│                                                               │
-│  ┌────────────┐  ┌──────────┐  ┌────────────┐  ┌─────────┐ │
-│  │ REST API   │─▶│ Service  │─▶│ Repository │─▶│ Models  │ │
-│  │ (Routes)   │  │ Layer    │  │ Layer      │  │ (ORM)   │ │
-│  └────────────┘  └──────────┘  └────────────┘  └────┬────┘ │
-│                                                       │       │
+│ Backend │
+│ FastAPI + Python 3.11+ (localhost:8000) │
+│ │
+│ ┌────────────┐ ┌──────────┐ ┌────────────┐ ┌─────────┐ │
+│ │ REST API │─▶│ Service │─▶│ Repository │─▶│ Models │ │
+│ │ (Routes) │ │ Layer │ │ Layer │ │ (ORM) │ │
+│ └────────────┘ └──────────┘ └────────────┘ └────┬────┘ │
+│ │ │
 └───────────────────────────────────────────────────────┼───────┘
-                                                        │
-                         ┌──────────────────────────────┴─────┐
-                         ▼                                     ▼
-              ┌──────────────────┐                ┌──────────────────┐
-              │   PostgreSQL     │                │    MongoDB       │
-              │   (port 5432)    │                │   (port 27017)   │
-              │                  │                │                  │
-              │ - Users          │                │ - Logs           │
-              │ - Roles          │                │ - Events         │
-              │ - Permissions    │                │ - Flexible data  │
-              └──────────────────┘                └──────────────────┘
+ │
+ ┌──────────────────────────────┴─────┐
+ ▼ ▼
+ ┌──────────────────┐ ┌──────────────────┐
+ │ PostgreSQL │ │ MongoDB │
+ │ (port 5432) │ │ (port 27017) │
+ │ │ │ │
+ │ - Users │ │ - Logs │
+ │ - Roles │ │ - Events │
+ │ - Permissions │ │ - Flexible data │
+ └──────────────────┘ └──────────────────┘
 ```
 
 ## Technology Stack
@@ -88,6 +88,23 @@ This document describes the technical architecture of the fullstack SaaS boilerp
 
 ## Dual Database Strategy
 
+**Important**: MongoDB is **optional**. The boilerplate supports:
+- [X] **PostgreSQL only** (recommended for most projects)
+- [X] **PostgreSQL + MongoDB** (for high-volume logging/analytics)
+- [X] **MongoDB only** (less common, requires code modifications)
+
+**When you DON'T need MongoDB**:
+- Simple CRUD applications
+- Traditional web apps with relational data only
+- Projects without high-volume logging/analytics
+- MVP/prototypes
+
+**When you DO need MongoDB**:
+- Storing millions of log entries
+- Real-time analytics with flexible schemas
+- Event sourcing patterns
+- Temporary/cache data with TTL
+
 ### PostgreSQL (Relational - Primary)
 
 **Use For**:
@@ -101,14 +118,14 @@ This document describes the technical architecture of the fullstack SaaS boilerp
 ```python
 # backend/app/models/user.py
 class User(Base):
-    __tablename__ = "users"
+ __tablename__ = "users"
 
-    id: Mapped[UUID] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(unique=True, index=True)
-    hashed_password: Mapped[str]
+ id: Mapped[UUID] = mapped_column(primary_key=True)
+ email: Mapped[str] = mapped_column(unique=True, index=True)
+ hashed_password: Mapped[str]
 
-    # Relationships
-    roles: Mapped[list["Role"]] = relationship(secondary=user_roles)
+ # Relationships
+ roles: Mapped[list["Role"]] = relationship(secondary=user_roles)
 ```
 
 **Access Pattern**: SQLAlchemy async sessions via Repository layer
@@ -126,15 +143,15 @@ class User(Base):
 ```python
 # backend/app/repositories/mongodb/event_repository.py
 {
-    "_id": ObjectId("..."),
-    "event_type": "user_login",
-    "user_id": "uuid-here",
-    "timestamp": ISODate("2024-01-15T10:30:00Z"),
-    "metadata": {  # Flexible structure
-        "ip_address": "192.168.1.1",
-        "user_agent": "...",
-        "custom_field": "..."
-    }
+ "_id": ObjectId("..."),
+ "event_type": "user_login",
+ "user_id": "uuid-here",
+ "timestamp": ISODate("2024-01-15T10:30:00Z"),
+ "metadata": { # Flexible structure
+ "ip_address": "192.168.1.1",
+ "user_agent": "...",
+ "custom_field": "..."
+ }
 }
 ```
 
@@ -143,52 +160,52 @@ class User(Base):
 ### Decision Framework
 
 **Choose PostgreSQL when**:
-- ✅ Strict schema required
-- ✅ Relationships are critical
-- ✅ ACID transactions needed
-- ✅ Complex queries (JOINs, aggregations)
+- [X] Strict schema required
+- [X] Relationships are critical
+- [X] ACID transactions needed
+- [X] Complex queries (JOINs, aggregations)
 
 **Choose MongoDB when**:
-- ✅ Schema flexibility needed
-- ✅ High write volume (logs, events)
-- ✅ Nested/hierarchical data
-- ✅ Temporary/cache data
+- [X] Schema flexibility needed
+- [X] High write volume (logs, events)
+- [X] Nested/hierarchical data
+- [X] Temporary/cache data
 
 **Don't**:
-- ❌ Store same logical data in both databases
-- ❌ Use MongoDB just because "NoSQL is faster"
-- ❌ Put critical transactional data in MongoDB
+- [-] Store same logical data in both databases
+- [-] Use MongoDB just because "NoSQL is faster"
+- [-] Put critical transactional data in MongoDB
 
 ## Authentication Flow
 
 ### Login Process
 
 ```
-┌─────────┐                ┌─────────┐                ┌──────────┐
-│ Browser │                │ Backend │                │ Database │
-└────┬────┘                └────┬────┘                └────┬─────┘
-     │                          │                          │
-     │ POST /api/v1/auth/login  │                          │
-     │ {email, password}        │                          │
-     ├─────────────────────────▶│                          │
-     │                          │ Query user by email      │
-     │                          ├─────────────────────────▶│
-     │                          │◀─────────────────────────┤
-     │                          │ User with hashed_password│
-     │                          │                          │
-     │                          │ Verify password (bcrypt) │
-     │                          │                          │
-     │                          │ Generate JWT tokens:     │
-     │                          │ - access (30 min)        │
-     │                          │ - refresh (7 days)       │
-     │                          │                          │
-     │ {access_token,           │                          │
-     │  refresh_token,          │                          │
-     │  token_type: "bearer"}   │                          │
-     │◀─────────────────────────┤                          │
-     │                          │                          │
-     │ Store in localStorage    │                          │
-     │                          │                          │
+┌─────────┐ ┌─────────┐ ┌──────────┐
+│ Browser │ │ Backend │ │ Database │
+└────┬────┘ └────┬────┘ └────┬─────┘
+ │ │ │
+ │ POST /api/v1/auth/login │ │
+ │ {email, password} │ │
+ ├─────────────────────────▶│ │
+ │ │ Query user by email │
+ │ ├─────────────────────────▶│
+ │ │◀─────────────────────────┤
+ │ │ User with hashed_password│
+ │ │ │
+ │ │ Verify password (bcrypt) │
+ │ │ │
+ │ │ Generate JWT tokens: │
+ │ │ - access (30 min) │
+ │ │ - refresh (7 days) │
+ │ │ │
+ │ {access_token, │ │
+ │ refresh_token, │ │
+ │ token_type: "bearer"} │ │
+ │◀─────────────────────────┤ │
+ │ │ │
+ │ Store in localStorage │ │
+ │ │ │
 ```
 
 ### Token Structure
@@ -196,53 +213,53 @@ class User(Base):
 **Access Token** (30 minutes):
 ```json
 {
-  "sub": "user-uuid",
-  "email": "user@example.com",
-  "roles": ["user"],
-  "permissions": ["USERS_READ", "USERS_WRITE"],
-  "exp": 1705320000
+ "sub": "user-uuid",
+ "email": "user@example.com",
+ "roles": ["user"],
+ "permissions": ["USERS_READ", "USERS_WRITE"],
+ "exp": 1705320000
 }
 ```
 
 **Refresh Token** (7 days):
 ```json
 {
-  "sub": "user-uuid",
-  "type": "refresh",
-  "exp": 1705920000
+ "sub": "user-uuid",
+ "type": "refresh",
+ "exp": 1705920000
 }
 ```
 
 ### Token Refresh Flow
 
 ```
-┌─────────┐                ┌─────────┐
-│ Browser │                │ Backend │
-└────┬────┘                └────┬────┘
-     │                          │
-     │ API Request              │
-     │ Authorization: Bearer... │
-     ├─────────────────────────▶│
-     │                          │ Verify access token
-     │                          │ ❌ Expired
-     │                          │
-     │ 401 Unauthorized         │
-     │◀─────────────────────────┤
-     │                          │
-     │ POST /api/v1/auth/refresh│
-     │ {refresh_token}          │
-     ├─────────────────────────▶│
-     │                          │ Verify refresh token
-     │                          │ ✅ Valid
-     │                          │ Generate new access token
-     │                          │
-     │ {access_token}           │
-     │◀─────────────────────────┤
-     │                          │
-     │ Retry original request   │
-     │ with new token           │
-     ├─────────────────────────▶│
-     │                          │
+┌─────────┐ ┌─────────┐
+│ Browser │ │ Backend │
+└────┬────┘ └────┬────┘
+ │ │
+ │ API Request │
+ │ Authorization: Bearer... │
+ ├─────────────────────────▶│
+ │ │ Verify access token
+ │ │ [-] Expired
+ │ │
+ │ 401 Unauthorized │
+ │◀─────────────────────────┤
+ │ │
+ │ POST /api/v1/auth/refresh│
+ │ {refresh_token} │
+ ├─────────────────────────▶│
+ │ │ Verify refresh token
+ │ │ [X] Valid
+ │ │ Generate new access token
+ │ │
+ │ {access_token} │
+ │◀─────────────────────────┤
+ │ │
+ │ Retry original request │
+ │ with new token │
+ ├─────────────────────────▶│
+ │ │
 ```
 
 **Frontend Implementation**: Axios interceptor automatically retries failed requests after refresh (see `frontend/src/api/client.ts`)
@@ -254,17 +271,17 @@ class User(Base):
 - Alternative: Consider `httpOnly` cookies for production (immune to XSS)
 
 **Security Measures**:
-- ✅ Passwords hashed with bcrypt (12 rounds)
-- ✅ JWT tokens signed with RS256 (private key)
-- ✅ Refresh tokens rotated on use (optional)
-- ✅ Short access token lifetime (30 min)
-- ✅ HTTPS only in production
+- [X] Passwords hashed with bcrypt (12 rounds)
+- [X] JWT tokens signed with RS256 (private key)
+- [X] Refresh tokens rotated on use (optional)
+- [X] Short access token lifetime (30 min)
+- [X] HTTPS only in production
 
 **Don't**:
-- ❌ Store tokens in cookies without `httpOnly` flag
-- ❌ Log tokens (access or refresh)
-- ❌ Send tokens in URL parameters
-- ❌ Use weak signing algorithms (HS256 with weak secrets)
+- [-] Store tokens in cookies without `httpOnly` flag
+- [-] Log tokens (access or refresh)
+- [-] Send tokens in URL parameters
+- [-] Use weak signing algorithms (HS256 with weak secrets)
 
 ## Permission System
 
@@ -273,11 +290,11 @@ class User(Base):
 **Permission Enum** (`backend/app/models/permission.py`):
 ```python
 class Permission(str, Enum):
-    USERS_READ = "users:read"
-    USERS_WRITE = "users:write"
-    USERS_DELETE = "users:delete"
-    ROLES_MANAGE = "roles:manage"
-    # ... add more as needed
+ USERS_READ = "users:read"
+ USERS_WRITE = "users:write"
+ USERS_DELETE = "users:delete"
+ ROLES_MANAGE = "roles:manage"
+ # ... add more as needed
 ```
 
 **Endpoint Protection**:
@@ -288,22 +305,22 @@ from app.common.dependencies import require_permissions
 @router.get("/users/{user_id}")
 @require_permissions(Permission.USERS_READ)
 async def get_user(user_id: UUID, current_user: User = Depends(get_current_user)):
-    # Only users with USERS_READ permission can access
-    ...
+ # Only users with USERS_READ permission can access
+ ...
 ```
 
 **Role Assignment** (`backend/app/models/role.py`):
 ```python
 # Roles have many-to-many relationship with permissions
 admin_role = Role(name="admin", permissions=[
-    Permission.USERS_READ,
-    Permission.USERS_WRITE,
-    Permission.USERS_DELETE,
-    Permission.ROLES_MANAGE
+ Permission.USERS_READ,
+ Permission.USERS_WRITE,
+ Permission.USERS_DELETE,
+ Permission.ROLES_MANAGE
 ])
 
 user_role = Role(name="user", permissions=[
-    Permission.USERS_READ  # Limited access
+ Permission.USERS_READ # Limited access
 ])
 ```
 
@@ -313,12 +330,12 @@ user_role = Role(name="user", permissions=[
 ```typescript
 // Show/hide UI based on permissions
 <Can permission="USERS_DELETE">
-  <Button onClick={handleDelete}>Delete User</Button>
+ <Button onClick={handleDelete}>Delete User</Button>
 </Can>
 
 // Multiple permissions (all required)
 <Can permissions={["USERS_WRITE", "ROLES_MANAGE"]}>
-  <AdminPanel />
+ <AdminPanel />
 </Can>
 ```
 
@@ -328,7 +345,7 @@ const { hasPermission, hasAllPermissions } = usePermissions();
 
 // Programmatic checks
 if (hasPermission("USERS_DELETE")) {
-  // Show delete modal
+ // Show delete modal
 }
 ```
 
@@ -345,72 +362,72 @@ if (hasPermission("USERS_DELETE")) {
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│ 1. Backend: Define Pydantic Schemas                          │
-│    backend/app/schemas/user.py                               │
-│                                                               │
-│    class UserResponse(BaseModel):                            │
-│        id: UUID                                              │
-│        email: str                                            │
-│        created_at: datetime                                  │
+│ 1. Backend: Define Pydantic Schemas │
+│ backend/app/schemas/user.py │
+│ │
+│ class UserResponse(BaseModel): │
+│ id: UUID │
+│ email: str │
+│ created_at: datetime │
 └───────────────────────────┬──────────────────────────────────┘
-                            │
-                            ▼
+ │
+ ▼
 ┌──────────────────────────────────────────────────────────────┐
-│ 2. Backend: FastAPI Auto-Generates OpenAPI Spec              │
-│    http://localhost:8000/openapi.json                        │
-│                                                               │
-│    {                                                          │
-│      "components": {                                          │
-│        "schemas": {                                           │
-│          "UserResponse": {                                    │
-│            "properties": {                                    │
-│              "id": {"type": "string", "format": "uuid"},     │
-│              "email": {"type": "string"},                    │
-│              "created_at": {"type": "string", ...}           │
-│            }                                                  │
-│          }                                                    │
-│        }                                                      │
-│      }                                                        │
-│    }                                                          │
+│ 2. Backend: FastAPI Auto-Generates OpenAPI Spec │
+│ http://localhost:8000/openapi.json │
+│ │
+│ { │
+│ "components": { │
+│ "schemas": { │
+│ "UserResponse": { │
+│ "properties": { │
+│ "id": {"type": "string", "format": "uuid"}, │
+│ "email": {"type": "string"}, │
+│ "created_at": {"type": "string", ...} │
+│ } │
+│ } │
+│ } │
+│ } │
+│ } │
 └───────────────────────────┬──────────────────────────────────┘
-                            │
-                            ▼
+ │
+ ▼
 ┌──────────────────────────────────────────────────────────────┐
-│ 3. Frontend: Generate TypeScript Types                       │
-│    cd frontend && npm run generate:types                     │
-│                                                               │
-│    → Uses openapi-typescript-codegen                         │
-│    → Reads http://localhost:8000/openapi.json                │
-│    → Writes to src/types/generated/api.ts                    │
+│ 3. Frontend: Generate TypeScript Types │
+│ cd frontend && npm run generate:types │
+│ │
+│ → Uses openapi-typescript-codegen │
+│ → Reads http://localhost:8000/openapi.json │
+│ → Writes to src/types/generated/api.ts │
 └───────────────────────────┬──────────────────────────────────┘
-                            │
-                            ▼
+ │
+ ▼
 ┌──────────────────────────────────────────────────────────────┐
-│ 4. Frontend: Import & Use Types                              │
-│    src/features/users/api/users.ts                           │
-│                                                               │
-│    import { UserResponse } from '@/types/generated/api';     │
-│                                                               │
-│    export const getUser = async (id: string):                │
-│      Promise<UserResponse> => {                              │
-│      const { data } = await apiClient.get(`/users/${id}`);  │
-│      return data;                                            │
-│    }                                                          │
+│ 4. Frontend: Import & Use Types │
+│ src/features/users/api/users.ts │
+│ │
+│ import { UserResponse } from '@/types/generated/api'; │
+│ │
+│ export const getUser = async (id: string): │
+│ Promise<UserResponse> => { │
+│ const { data } = await apiClient.get(`/users/${id}`); │
+│ return data; │
+│ } │
 └──────────────────────────────────────────────────────────────┘
 ```
 
 ### When to Regenerate
 
 Run `npm run generate:types` in frontend/ after:
-- ✅ Adding/modifying Pydantic schemas in backend
-- ✅ Adding/removing API endpoints
-- ✅ Changing request/response models
-- ✅ Adding new Permission enum values
+- [X] Adding/modifying Pydantic schemas in backend
+- [X] Adding/removing API endpoints
+- [X] Changing request/response models
+- [X] Adding new Permission enum values
 
 **Don't**:
-- ❌ Manually edit `src/types/generated/api.ts` (auto-generated)
-- ❌ Commit backend changes without regenerating types
-- ❌ Ignore TypeScript errors after regeneration (fix schemas)
+- [-] Manually edit `src/types/generated/api.ts` (auto-generated)
+- [-] Commit backend changes without regenerating types
+- [-] Ignore TypeScript errors after regeneration (fix schemas)
 
 ## API Contract
 
@@ -420,12 +437,12 @@ Run `npm run generate:types` in frontend/ after:
 
 **Resource Endpoints**:
 ```
-GET    /api/v1/users           # List users (paginated)
-POST   /api/v1/users           # Create user
-GET    /api/v1/users/{id}      # Get single user
-PUT    /api/v1/users/{id}      # Update user (full)
-PATCH  /api/v1/users/{id}      # Update user (partial)
-DELETE /api/v1/users/{id}      # Delete user
+GET /api/v1/users # List users (paginated)
+POST /api/v1/users # Create user
+GET /api/v1/users/{id} # Get single user
+PUT /api/v1/users/{id} # Update user (full)
+PATCH /api/v1/users/{id} # Update user (partial)
+DELETE /api/v1/users/{id} # Delete user
 ```
 
 ### Response Format
@@ -433,30 +450,30 @@ DELETE /api/v1/users/{id}      # Delete user
 **Success Response**:
 ```json
 {
-  "id": "uuid-here",
-  "email": "user@example.com",
-  "created_at": "2024-01-15T10:30:00Z"
+ "id": "uuid-here",
+ "email": "user@example.com",
+ "created_at": "2024-01-15T10:30:00Z"
 }
 ```
 
 **List Response** (Paginated):
 ```json
 {
-  "items": [
-    {"id": "uuid-1", "email": "user1@example.com"},
-    {"id": "uuid-2", "email": "user2@example.com"}
-  ],
-  "total": 100,
-  "page": 1,
-  "size": 10,
-  "pages": 10
+ "items": [
+ {"id": "uuid-1", "email": "user1@example.com"},
+ {"id": "uuid-2", "email": "user2@example.com"}
+ ],
+ "total": 100,
+ "page": 1,
+ "size": 10,
+ "pages": 10
 }
 ```
 
 **Error Response**:
 ```json
 {
-  "detail": "User not found"
+ "detail": "User not found"
 }
 ```
 
@@ -477,23 +494,23 @@ DELETE /api/v1/users/{id}      # Delete user
 ```python
 # backend/app/common/exceptions.py
 class NotFoundException(HTTPException):
-    def __init__(self, detail: str = "Resource not found"):
-        super().__init__(status_code=404, detail=detail)
+ def __init__(self, detail: str = "Resource not found"):
+ super().__init__(status_code=404, detail=detail)
 
 class UnauthorizedException(HTTPException):
-    def __init__(self, detail: str = "Not authenticated"):
-        super().__init__(status_code=401, detail=detail)
+ def __init__(self, detail: str = "Not authenticated"):
+ super().__init__(status_code=401, detail=detail)
 
 class ForbiddenException(HTTPException):
-    def __init__(self, detail: str = "Insufficient permissions"):
-        super().__init__(status_code=403, detail=detail)
+ def __init__(self, detail: str = "Insufficient permissions"):
+ super().__init__(status_code=403, detail=detail)
 ```
 
 **Usage in Endpoints**:
 ```python
 user = await user_service.get_user(user_id)
 if not user:
-    raise NotFoundException(f"User {user_id} not found")
+ raise NotFoundException(f"User {user_id} not found")
 ```
 
 ### Frontend Error Handling
@@ -501,21 +518,21 @@ if not user:
 **Axios Interceptor** (`frontend/src/api/client.ts`):
 ```typescript
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      // Attempt token refresh
-      await refreshToken();
-      return apiClient.request(error.config);
-    }
+ (response) => response,
+ async (error) => {
+ if (error.response?.status === 401) {
+ // Attempt token refresh
+ await refreshToken();
+ return apiClient.request(error.config);
+ }
 
-    // Show error toast for mutations
-    if (error.config.method !== 'get') {
-      toast.error(error.response?.data?.detail || 'An error occurred');
-    }
+ // Show error toast for mutations
+ if (error.config.method !== 'get') {
+ toast.error(error.response?.data?.detail || 'An error occurred');
+ }
 
-    return Promise.reject(error);
-  }
+ return Promise.reject(error);
+ }
 );
 ```
 
@@ -523,20 +540,20 @@ apiClient.interceptors.response.use(
 ```typescript
 // Mutations - Show toast
 const mutation = useMutation({
-  mutationFn: createUser,
-  onError: (error) => {
-    toast.error(error.response?.data?.detail || 'Failed to create user');
-  }
+ mutationFn: createUser,
+ onError: (error) => {
+ toast.error(error.response?.data?.detail || 'Failed to create user');
+ }
 });
 
 // Queries - Show inline UI
 const { data, error, isError } = useQuery({
-  queryKey: ['user', id],
-  queryFn: () => getUser(id)
+ queryKey: ['user', id],
+ queryFn: () => getUser(id)
 });
 
 if (isError) {
-  return <ErrorMessage>{error.message}</ErrorMessage>;
+ return <ErrorMessage>{error.message}</ErrorMessage>;
 }
 ```
 
@@ -547,45 +564,45 @@ if (isError) {
 ```
 docker compose up -d
 
-┌──────────────────┐  ┌──────────────────┐
-│ Backend          │  │ Frontend         │
-│ FastAPI          │  │ Vite Dev Server  │
-│ Port: 8000       │  │ Port: 5173       │
-│ Hot Reload: ✅   │  │ Hot Reload: ✅   │
-└────────┬─────────┘  └────────┬─────────┘
-         │                     │
-         └──────────┬──────────┘
-                    │
-    ┌───────────────┴───────────────┐
-    │                               │
-┌───▼──────────┐         ┌─────────▼────┐
-│ PostgreSQL   │         │ MongoDB      │
-│ Port: 5432   │         │ Port: 27017  │
-└──────────────┘         └──────────────┘
+┌──────────────────┐ ┌──────────────────┐
+│ Backend │ │ Frontend │
+│ FastAPI │ │ Vite Dev Server │
+│ Port: 8000 │ │ Port: 5173 │
+│ Hot Reload: [X] │ │ Hot Reload: [X] │
+└────────┬─────────┘ └────────┬─────────┘
+ │ │
+ └──────────┬──────────┘
+ │
+ ┌───────────────┴───────────────┐
+ │ │
+┌───▼──────────┐ ┌─────────▼────┐
+│ PostgreSQL │ │ MongoDB │
+│ Port: 5432 │ │ Port: 27017 │
+└──────────────┘ └──────────────┘
 ```
 
 ### Production (TODO)
 
 ```
 ┌─────────────────┐
-│ Nginx / Caddy   │  (Reverse proxy)
-│ Port: 80, 443   │
+│ Nginx / Caddy │ (Reverse proxy)
+│ Port: 80, 443 │
 └────────┬────────┘
-         │
-    ┌────┴──────────────┐
-    │                   │
-┌───▼────────┐   ┌──────▼─────┐
-│ Frontend   │   │ Backend    │
-│ Static     │   │ Gunicorn + │
-│ Build      │   │ Uvicorn    │
-└────────────┘   └──────┬─────┘
-                        │
-         ┌──────────────┴─────────────┐
-         │                            │
-    ┌────▼─────┐              ┌──────▼────┐
-    │ Postgres │              │ MongoDB   │
-    │ (Managed)│              │ (Managed) │
-    └──────────┘              └───────────┘
+ │
+ ┌────┴──────────────┐
+ │ │
+┌───▼────────┐ ┌──────▼─────┐
+│ Frontend │ │ Backend │
+│ Static │ │ Gunicorn + │
+│ Build │ │ Uvicorn │
+└────────────┘ └──────┬─────┘
+ │
+ ┌──────────────┴─────────────┐
+ │ │
+ ┌────▼─────┐ ┌──────▼────┐
+ │ Postgres │ │ MongoDB │
+ │ (Managed)│ │ (Managed) │
+ └──────────┘ └───────────┘
 ```
 
 **Environment Variables**:

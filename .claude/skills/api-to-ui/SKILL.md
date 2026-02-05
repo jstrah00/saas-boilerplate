@@ -9,11 +9,11 @@ Create complete frontend UI integration for existing backend API endpoints. This
 
 ## When to Use This Skill
 
-- ✅ Backend endpoint already exists and is working
-- ✅ Need to build frontend UI for existing API
-- ✅ Want to add new pages/components for existing backend features
-- ✅ Backend types need to be exposed to frontend
-- ✅ Connecting frontend to newly deployed backend services
+- [X] Backend endpoint already exists and is working
+- [X] Need to build frontend UI for existing API
+- [X] Want to add new pages/components for existing backend features
+- [X] Backend types need to be exposed to frontend
+- [X] Connecting frontend to newly deployed backend services
 
 **Don't use when**: Backend doesn't exist yet → Use `/backend-first` skill instead
 
@@ -72,7 +72,7 @@ ls backend/app/api/v1/endpoints/{feature}.py
 
 # Method 3: Test endpoint directly
 curl http://localhost:8000/api/v1/{feature} \
-  -H "Authorization: Bearer $TOKEN"
+ -H "Authorization: Bearer $TOKEN"
 ```
 
 **If endpoint doesn't exist**: Stop and use `/backend-first` skill first.
@@ -87,11 +87,11 @@ curl http://localhost:8000/openapi.json | jq '.components.schemas' | grep -A 10 
 
 # Example output:
 # "ProductResponse": {
-#   "properties": {
-#     "id": {"type": "string", "format": "uuid"},
-#     "name": {"type": "string"},
-#     "price": {"type": "number"}
-#   }
+# "properties": {
+# "id": {"type": "string", "format": "uuid"},
+# "name": {"type": "string"},
+# "price": {"type": "number"}
+# }
 # }
 ```
 
@@ -157,49 +157,49 @@ Create `frontend/src/features/{feature}/api/{feature}.ts`:
 ```typescript
 import { apiClient } from '@/lib/api-client';
 import type {
-  ProductResponse,
-  ProductCreate,
-  ProductUpdate,
-  PaginatedResponse
+ ProductResponse,
+ ProductCreate,
+ ProductUpdate,
+ PaginatedResponse
 } from '@/types/generated/api';
 
 // GET list - with pagination and filters
 export const getProducts = async (params?: {
-  page?: number;
-  size?: number;
-  search?: string;
-  // Add other filter params from backend
+ page?: number;
+ size?: number;
+ search?: string;
+ // Add other filter params from backend
 }): Promise<PaginatedResponse<ProductResponse>> => {
-  const { data } = await apiClient.get('/products', { params });
-  return data;
+ const { data } = await apiClient.get('/products', { params });
+ return data;
 };
 
 // GET single item
 export const getProduct = async (id: string): Promise<ProductResponse> => {
-  const { data } = await apiClient.get(`/products/${id}`);
-  return data;
+ const { data } = await apiClient.get(`/products/${id}`);
+ return data;
 };
 
 // POST - create
 export const createProduct = async (
-  product: ProductCreate
+ product: ProductCreate
 ): Promise<ProductResponse> => {
-  const { data } = await apiClient.post('/products', product);
-  return data;
+ const { data } = await apiClient.post('/products', product);
+ return data;
 };
 
 // PUT - update
 export const updateProduct = async (
-  id: string,
-  product: ProductUpdate
+ id: string,
+ product: ProductUpdate
 ): Promise<ProductResponse> => {
-  const { data } = await apiClient.put(`/products/${id}`, product);
-  return data;
+ const { data } = await apiClient.put(`/products/${id}`, product);
+ return data;
 };
 
 // DELETE
 export const deleteProduct = async (id: string): Promise<void> => {
-  await apiClient.delete(`/products/${id}`);
+ await apiClient.delete(`/products/${id}`);
 };
 ```
 
@@ -214,29 +214,29 @@ export const deleteProduct = async (id: string): Promise<void> => {
 **File Upload**:
 ```typescript
 export const uploadProductImage = async (
-  productId: string,
-  file: File
+ productId: string,
+ file: File
 ): Promise<{ image_url: string }> => {
-  const formData = new FormData();
-  formData.append('file', file);
+ const formData = new FormData();
+ formData.append('file', file);
 
-  const { data } = await apiClient.post(
-    `/products/${productId}/image`,
-    formData,
-    {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    }
-  );
+ const { data } = await apiClient.post(
+ `/products/${productId}/image`,
+ formData,
+ {
+ headers: { 'Content-Type': 'multipart/form-data' }
+ }
+ );
 
-  return data;
+ return data;
 };
 ```
 
 **Non-Paginated List**:
 ```typescript
 export const getProducts = async (): Promise<ProductResponse[]> => {
-  const { data } = await apiClient.get('/products');
-  return data; // Returns array directly, not paginated response
+ const { data } = await apiClient.get('/products');
+ return data; // Returns array directly, not paginated response
 };
 ```
 
@@ -244,8 +244,8 @@ export const getProducts = async (): Promise<ProductResponse[]> => {
 ```typescript
 // Example: POST /products/{id}/publish
 export const publishProduct = async (id: string): Promise<ProductResponse> => {
-  const { data } = await apiClient.post(`/products/${id}/publish`);
-  return data;
+ const { data } = await apiClient.post(`/products/${id}/publish`);
+ return data;
 };
 ```
 
@@ -261,81 +261,81 @@ Create `frontend/src/features/{feature}/hooks/use{Feature}.ts`:
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  getProducts,
-  getProduct,
-  createProduct,
-  updateProduct,
-  deleteProduct
+ getProducts,
+ getProduct,
+ createProduct,
+ updateProduct,
+ deleteProduct
 } from '../api/{feature}';
 import type { ProductCreate, ProductUpdate } from '@/types/generated/api';
 
 // Query: List with filters
 export const useProducts = (filters?: {
-  page?: number;
-  size?: number;
-  search?: string;
+ page?: number;
+ size?: number;
+ search?: string;
 }) => {
-  return useQuery({
-    queryKey: ['products', filters],
-    queryFn: () => getProducts(filters),
-    placeholderData: (prev) => prev, // Keep previous data while fetching new page
-  });
+ return useQuery({
+ queryKey: ['products', filters],
+ queryFn: () => getProducts(filters),
+ placeholderData: (prev) => prev, // Keep previous data while fetching new page
+ });
 };
 
 // Query: Single item
 export const useProduct = (id: string | undefined) => {
-  return useQuery({
-    queryKey: ['products', id],
-    queryFn: () => getProduct(id!),
-    enabled: !!id, // Only fetch when id is provided
-  });
+ return useQuery({
+ queryKey: ['products', id],
+ queryFn: () => getProduct(id!),
+ enabled: !!id, // Only fetch when id is provided
+ });
 };
 
 // Mutation: Create
 export const useCreateProduct = () => {
-  const queryClient = useQueryClient();
+ const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (data: ProductCreate) => createProduct(data),
-    onSuccess: () => {
-      // Invalidate list query to refetch
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Product created successfully');
-    },
-    onError: (error: any) => {
-      // Error toast shown by interceptor, but can add custom logic
-      console.error('Failed to create product:', error);
-    },
-  });
+ return useMutation({
+ mutationFn: (data: ProductCreate) => createProduct(data),
+ onSuccess: () => {
+ // Invalidate list query to refetch
+ queryClient.invalidateQueries({ queryKey: ['products'] });
+ toast.success('Product created successfully');
+ },
+ onError: (error: any) => {
+ // Error toast shown by interceptor, but can add custom logic
+ console.error('Failed to create product:', error);
+ },
+ });
 };
 
 // Mutation: Update
 export const useUpdateProduct = () => {
-  const queryClient = useQueryClient();
+ const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: ProductUpdate }) =>
-      updateProduct(id, data),
-    onSuccess: (_, variables) => {
-      // Invalidate both list and detail queries
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      queryClient.invalidateQueries({ queryKey: ['products', variables.id] });
-      toast.success('Product updated successfully');
-    },
-  });
+ return useMutation({
+ mutationFn: ({ id, data }: { id: string; data: ProductUpdate }) =>
+ updateProduct(id, data),
+ onSuccess: (_, variables) => {
+ // Invalidate both list and detail queries
+ queryClient.invalidateQueries({ queryKey: ['products'] });
+ queryClient.invalidateQueries({ queryKey: ['products', variables.id] });
+ toast.success('Product updated successfully');
+ },
+ });
 };
 
 // Mutation: Delete
 export const useDeleteProduct = () => {
-  const queryClient = useQueryClient();
+ const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (id: string) => deleteProduct(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Product deleted successfully');
-    },
-  });
+ return useMutation({
+ mutationFn: (id: string) => deleteProduct(id),
+ onSuccess: () => {
+ queryClient.invalidateQueries({ queryKey: ['products'] });
+ toast.success('Product deleted successfully');
+ },
+ });
 };
 ```
 
@@ -352,49 +352,49 @@ export const useDeleteProduct = () => {
 **Optimistic Updates**:
 ```typescript
 export const useUpdateProduct = () => {
-  const queryClient = useQueryClient();
+ const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: ProductUpdate }) =>
-      updateProduct(id, data),
-    onMutate: async ({ id, data }) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['products', id] });
+ return useMutation({
+ mutationFn: ({ id, data }: { id: string; data: ProductUpdate }) =>
+ updateProduct(id, data),
+ onMutate: async ({ id, data }) => {
+ // Cancel outgoing refetches
+ await queryClient.cancelQueries({ queryKey: ['products', id] });
 
-      // Snapshot previous value
-      const previous = queryClient.getQueryData(['products', id]);
+ // Snapshot previous value
+ const previous = queryClient.getQueryData(['products', id]);
 
-      // Optimistically update
-      queryClient.setQueryData(['products', id], (old: any) => ({
-        ...old,
-        ...data
-      }));
+ // Optimistically update
+ queryClient.setQueryData(['products', id], (old: any) => ({
+ ...old,
+ ...data
+ }));
 
-      return { previous };
-    },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      queryClient.setQueryData(['products', variables.id], context?.previous);
-    },
-    onSettled: (_, __, variables) => {
-      // Refetch regardless of success/error
-      queryClient.invalidateQueries({ queryKey: ['products', variables.id] });
-    },
-  });
+ return { previous };
+ },
+ onError: (err, variables, context) => {
+ // Rollback on error
+ queryClient.setQueryData(['products', variables.id], context?.previous);
+ },
+ onSettled: (_, __, variables) => {
+ // Refetch regardless of success/error
+ queryClient.invalidateQueries({ queryKey: ['products', variables.id] });
+ },
+ });
 };
 ```
 
 **Infinite Scroll**:
 ```typescript
 export const useInfiniteProducts = (filters?: { search?: string }) => {
-  return useInfiniteQuery({
-    queryKey: ['products', 'infinite', filters],
-    queryFn: ({ pageParam = 1 }) =>
-      getProducts({ ...filters, page: pageParam, size: 20 }),
-    getNextPageParam: (lastPage) =>
-      lastPage.page < lastPage.pages ? lastPage.page + 1 : undefined,
-    initialPageParam: 1,
-  });
+ return useInfiniteQuery({
+ queryKey: ['products', 'infinite', filters],
+ queryFn: ({ pageParam = 1 }) =>
+ getProducts({ ...filters, page: pageParam, size: 20 }),
+ getNextPageParam: (lastPage) =>
+ lastPage.page < lastPage.pages ? lastPage.page + 1 : undefined,
+ initialPageParam: 1,
+ });
 };
 ```
 
@@ -416,57 +416,57 @@ import { Edit, Trash2 } from 'lucide-react';
 import type { ProductResponse } from '@/types/generated/api';
 
 interface ProductCardProps {
-  product: ProductResponse;
-  onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+ product: ProductResponse;
+ onEdit?: (id: string) => void;
+ onDelete?: (id: string) => void;
 }
 
 export const ProductCard = ({ product, onEdit, onDelete }: ProductCardProps) => {
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <h3 className="text-lg font-semibold">{product.name}</h3>
-          {product.is_active && (
-            <Badge variant="success">Active</Badge>
-          )}
-        </div>
-      </CardHeader>
+ return (
+ <Card>
+ <CardHeader>
+ <div className="flex items-start justify-between">
+ <h3 className="text-lg font-semibold">{product.name}</h3>
+ {product.is_active && (
+ <Badge variant="success">Active</Badge>
+ )}
+ </div>
+ </CardHeader>
 
-      <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-2">
-          {product.description}
-        </p>
-        <div className="mt-4">
-          <span className="text-2xl font-bold">${product.price}</span>
-        </div>
-      </CardContent>
+ <CardContent>
+ <p className="text-sm text-muted-foreground line-clamp-2">
+ {product.description}
+ </p>
+ <div className="mt-4">
+ <span className="text-2xl font-bold">${product.price}</span>
+ </div>
+ </CardContent>
 
-      <CardFooter className="gap-2">
-        <Can permission="PRODUCTS_WRITE">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onEdit?.(product.id)}
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit
-          </Button>
-        </Can>
+ <CardFooter className="gap-2">
+ <Can permission="PRODUCTS_WRITE">
+ <Button
+ variant="outline"
+ size="sm"
+ onClick={() => onEdit?.(product.id)}
+ >
+ <Edit className="h-4 w-4 mr-2" />
+ Edit
+ </Button>
+ </Can>
 
-        <Can permission="PRODUCTS_DELETE">
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete?.(product.id)}
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            Delete
-          </Button>
-        </Can>
-      </CardFooter>
-    </Card>
-  );
+ <Can permission="PRODUCTS_DELETE">
+ <Button
+ variant="destructive"
+ size="sm"
+ onClick={() => onDelete?.(product.id)}
+ >
+ <Trash2 className="h-4 w-4 mr-2" />
+ Delete
+ </Button>
+ </Can>
+ </CardFooter>
+ </Card>
+ );
 };
 ```
 
@@ -490,125 +490,125 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  FormDescription
+ Form,
+ FormField,
+ FormItem,
+ FormLabel,
+ FormControl,
+ FormMessage,
+ FormDescription
 } from '@/components/ui/form';
 import type { ProductResponse } from '@/types/generated/api';
 
 // Define Zod schema matching backend validation
 const productSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(200, 'Name too long'),
-  description: z.string().optional(),
-  price: z.number().positive('Price must be positive').multipleOf(0.01),
-  stock_quantity: z.number().int().min(0, 'Stock cannot be negative'),
+ name: z.string().min(1, 'Name is required').max(200, 'Name too long'),
+ description: z.string().optional(),
+ price: z.number().positive('Price must be positive').multipleOf(0.01),
+ stock_quantity: z.number().int().min(0, 'Stock cannot be negative'),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
-  product?: ProductResponse; // For edit mode
-  onSubmit: (data: ProductFormData) => void;
-  isLoading?: boolean;
+ product?: ProductResponse; // For edit mode
+ onSubmit: (data: ProductFormData) => void;
+ isLoading?: boolean;
 }
 
 export const ProductForm = ({ product, onSubmit, isLoading }: ProductFormProps) => {
-  const form = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-    defaultValues: product || {
-      name: '',
-      description: '',
-      price: 0,
-      stock_quantity: 0,
-    },
-  });
+ const form = useForm<ProductFormData>({
+ resolver: zodResolver(productSchema),
+ defaultValues: product || {
+ name: '',
+ description: '',
+ price: 0,
+ stock_quantity: 0,
+ },
+ });
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Product Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter product name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+ return (
+ <Form {...form}>
+ <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+ <FormField
+ control={form.control}
+ name="name"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Product Name</FormLabel>
+ <FormControl>
+ <Input placeholder="Enter product name" {...field} />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Enter product description"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Optional description of the product
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+ <FormField
+ control={form.control}
+ name="description"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Description</FormLabel>
+ <FormControl>
+ <Textarea
+ placeholder="Enter product description"
+ {...field}
+ />
+ </FormControl>
+ <FormDescription>
+ Optional description of the product
+ </FormDescription>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="0.00"
-                  {...field}
-                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+ <FormField
+ control={form.control}
+ name="price"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Price</FormLabel>
+ <FormControl>
+ <Input
+ type="number"
+ step="0.01"
+ placeholder="0.00"
+ {...field}
+ onChange={(e) => field.onChange(parseFloat(e.target.value))}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-        <FormField
-          control={form.control}
-          name="stock_quantity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stock Quantity</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="0"
-                  {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+ <FormField
+ control={form.control}
+ name="stock_quantity"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Stock Quantity</FormLabel>
+ <FormControl>
+ <Input
+ type="number"
+ placeholder="0"
+ {...field}
+ onChange={(e) => field.onChange(parseInt(e.target.value))}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-        <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Saving...' : product ? 'Update Product' : 'Create Product'}
-        </Button>
-      </form>
-    </Form>
-  );
+ <Button type="submit" disabled={isLoading} className="w-full">
+ {isLoading ? 'Saving...' : product ? 'Update Product' : 'Create Product'}
+ </Button>
+ </form>
+ </Form>
+ );
 };
 ```
 
@@ -631,60 +631,60 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { ProductResponse } from '@/types/generated/api';
 
 interface ProductListProps {
-  products: ProductResponse[] | undefined;
-  isLoading: boolean;
-  isError: boolean;
-  error?: Error;
-  onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+ products: ProductResponse[] | undefined;
+ isLoading: boolean;
+ isError: boolean;
+ error?: Error;
+ onEdit?: (id: string) => void;
+ onDelete?: (id: string) => void;
 }
 
 export const ProductList = ({
-  products,
-  isLoading,
-  isError,
-  error,
-  onEdit,
-  onDelete
+ products,
+ isLoading,
+ isError,
+ error,
+ onEdit,
+ onDelete
 }: ProductListProps) => {
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+ if (isLoading) {
+ return (
+ <div className="flex justify-center items-center p-12">
+ <Loader2 className="h-8 w-8 animate-spin text-primary" />
+ </div>
+ );
+ }
 
-  if (isError) {
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>
-          {error?.message || 'Failed to load products'}
-        </AlertDescription>
-      </Alert>
-    );
-  }
+ if (isError) {
+ return (
+ <Alert variant="destructive">
+ <AlertDescription>
+ {error?.message || 'Failed to load products'}
+ </AlertDescription>
+ </Alert>
+ );
+ }
 
-  if (!products || products.length === 0) {
-    return (
-      <div className="text-center p-12">
-        <p className="text-muted-foreground">No products found</p>
-      </div>
-    );
-  }
+ if (!products || products.length === 0) {
+ return (
+ <div className="text-center p-12">
+ <p className="text-muted-foreground">No products found</p>
+ </div>
+ );
+ }
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      ))}
-    </div>
-  );
+ return (
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ {products.map((product) => (
+ <ProductCard
+ key={product.id}
+ product={product}
+ onEdit={onEdit}
+ onDelete={onDelete}
+ />
+ ))}
+ </div>
+ );
 };
 ```
 
@@ -713,106 +713,106 @@ import { Can } from '@/components/auth/Can';
 import { Plus, Search } from 'lucide-react';
 
 export const ProductListPage = () => {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
+ const [page, setPage] = useState(1);
+ const [search, setSearch] = useState('');
+ const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const { data, isLoading, isError, error } = useProducts({ page, search, size: 12 });
-  const deleteProduct = useDeleteProduct();
-  const createProduct = useCreateProduct();
+ const { data, isLoading, isError, error } = useProducts({ page, search, size: 12 });
+ const deleteProduct = useDeleteProduct();
+ const createProduct = useCreateProduct();
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
-      deleteProduct.mutate(id);
-    }
-  };
+ const handleDelete = (id: string) => {
+ if (confirm('Are you sure you want to delete this product?')) {
+ deleteProduct.mutate(id);
+ }
+ };
 
-  const handleCreate = (data: ProductFormData) => {
-    createProduct.mutate(data, {
-      onSuccess: () => {
-        setIsCreateOpen(false);
-      }
-    });
-  };
+ const handleCreate = (data: ProductFormData) => {
+ createProduct.mutate(data, {
+ onSuccess: () => {
+ setIsCreateOpen(false);
+ }
+ });
+ };
 
-  return (
-    <div className="container py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">Products</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your product catalog
-          </p>
-        </div>
+ return (
+ <div className="container py-8">
+ {/* Header */}
+ <div className="flex items-center justify-between mb-6">
+ <div>
+ <h1 className="text-3xl font-bold">Products</h1>
+ <p className="text-muted-foreground mt-1">
+ Manage your product catalog
+ </p>
+ </div>
 
-        <Can permission="PRODUCTS_WRITE">
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Product
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create Product</DialogTitle>
-              </DialogHeader>
-              <ProductForm
-                onSubmit={handleCreate}
-                isLoading={createProduct.isPending}
-              />
-            </DialogContent>
-          </Dialog>
-        </Can>
-      </div>
+ <Can permission="PRODUCTS_WRITE">
+ <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+ <DialogTrigger asChild>
+ <Button>
+ <Plus className="h-4 w-4 mr-2" />
+ Add Product
+ </Button>
+ </DialogTrigger>
+ <DialogContent>
+ <DialogHeader>
+ <DialogTitle>Create Product</DialogTitle>
+ </DialogHeader>
+ <ProductForm
+ onSubmit={handleCreate}
+ isLoading={createProduct.isPending}
+ />
+ </DialogContent>
+ </Dialog>
+ </Can>
+ </div>
 
-      {/* Search */}
-      <div className="mb-6">
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
+ {/* Search */}
+ <div className="mb-6">
+ <div className="relative max-w-sm">
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+ <Input
+ placeholder="Search products..."
+ value={search}
+ onChange={(e) => setSearch(e.target.value)}
+ className="pl-10"
+ />
+ </div>
+ </div>
 
-      {/* List */}
-      <ProductList
-        products={data?.items}
-        isLoading={isLoading}
-        isError={isError}
-        error={error}
-        onDelete={handleDelete}
-      />
+ {/* List */}
+ <ProductList
+ products={data?.items}
+ isLoading={isLoading}
+ isError={isError}
+ error={error}
+ onDelete={handleDelete}
+ />
 
-      {/* Pagination */}
-      {data && data.pages > 1 && (
-        <div className="mt-8 flex justify-center gap-2">
-          <Button
-            variant="outline"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            Previous
-          </Button>
-          <span className="flex items-center px-4">
-            Page {page} of {data.pages}
-          </span>
-          <Button
-            variant="outline"
-            disabled={page >= data.pages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
-          </Button>
-        </div>
-      )}
-    </div>
-  );
+ {/* Pagination */}
+ {data && data.pages > 1 && (
+ <div className="mt-8 flex justify-center gap-2">
+ <Button
+ variant="outline"
+ disabled={page === 1}
+ onClick={() => setPage((p) => p - 1)}
+ >
+ Previous
+ </Button>
+ <span className="flex items-center px-4">
+ Page {page} of {data.pages}
+ </span>
+ <Button
+ variant="outline"
+ disabled={page >= data.pages}
+ onClick={() => setPage((p) => p + 1)}
+ >
+ Next
+ </Button>
+ </div>
+ )}
+ </div>
+ );
 };
 ```
 
@@ -838,119 +838,119 @@ import { Loader2, ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 export const ProductDetailPage = () => {
-  const { id } = useParams({ from: '/products/$id' });
-  const navigate = useNavigate();
-  const [isEditOpen, setIsEditOpen] = useState(false);
+ const { id } = useParams({ from: '/products/$id' });
+ const navigate = useNavigate();
+ const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const { data: product, isLoading } = useProduct(id);
-  const updateProduct = useUpdateProduct();
-  const deleteProduct = useDeleteProduct();
+ const { data: product, isLoading } = useProduct(id);
+ const updateProduct = useUpdateProduct();
+ const deleteProduct = useDeleteProduct();
 
-  const handleUpdate = (data: ProductFormData) => {
-    updateProduct.mutate(
-      { id, data },
-      {
-        onSuccess: () => {
-          setIsEditOpen(false);
-        }
-      }
-    );
-  };
+ const handleUpdate = (data: ProductFormData) => {
+ updateProduct.mutate(
+ { id, data },
+ {
+ onSuccess: () => {
+ setIsEditOpen(false);
+ }
+ }
+ );
+ };
 
-  const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this product?')) {
-      deleteProduct.mutate(id, {
-        onSuccess: () => {
-          navigate({ to: '/products' });
-        }
-      });
-    }
-  };
+ const handleDelete = () => {
+ if (confirm('Are you sure you want to delete this product?')) {
+ deleteProduct.mutate(id, {
+ onSuccess: () => {
+ navigate({ to: '/products' });
+ }
+ });
+ }
+ };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
+ if (isLoading) {
+ return (
+ <div className="flex justify-center items-center min-h-screen">
+ <Loader2 className="h-8 w-8 animate-spin" />
+ </div>
+ );
+ }
 
-  if (!product) {
-    return <div>Product not found</div>;
-  }
+ if (!product) {
+ return <div>Product not found</div>;
+ }
 
-  return (
-    <div className="container py-8">
-      {/* Header */}
-      <div className="mb-6">
-        <Button variant="ghost" onClick={() => navigate({ to: '/products' })}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Products
-        </Button>
-      </div>
+ return (
+ <div className="container py-8">
+ {/* Header */}
+ <div className="mb-6">
+ <Button variant="ghost" onClick={() => navigate({ to: '/products' })}>
+ <ArrowLeft className="h-4 w-4 mr-2" />
+ Back to Products
+ </Button>
+ </div>
 
-      {/* Content */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">{product.name}</h1>
-              <p className="text-muted-foreground mt-1">{product.description}</p>
-            </div>
+ {/* Content */}
+ <Card>
+ <CardHeader>
+ <div className="flex items-start justify-between">
+ <div>
+ <h1 className="text-3xl font-bold">{product.name}</h1>
+ <p className="text-muted-foreground mt-1">{product.description}</p>
+ </div>
 
-            <div className="flex gap-2">
-              <Can permission="PRODUCTS_WRITE">
-                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                  <Button variant="outline" onClick={() => setIsEditOpen(true)}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit Product</DialogTitle>
-                    </DialogHeader>
-                    <ProductForm
-                      product={product}
-                      onSubmit={handleUpdate}
-                      isLoading={updateProduct.isPending}
-                    />
-                  </DialogContent>
-                </Dialog>
-              </Can>
+ <div className="flex gap-2">
+ <Can permission="PRODUCTS_WRITE">
+ <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+ <Button variant="outline" onClick={() => setIsEditOpen(true)}>
+ <Edit className="h-4 w-4 mr-2" />
+ Edit
+ </Button>
+ <DialogContent>
+ <DialogHeader>
+ <DialogTitle>Edit Product</DialogTitle>
+ </DialogHeader>
+ <ProductForm
+ product={product}
+ onSubmit={handleUpdate}
+ isLoading={updateProduct.isPending}
+ />
+ </DialogContent>
+ </Dialog>
+ </Can>
 
-              <Can permission="PRODUCTS_DELETE">
-                <Button variant="destructive" onClick={handleDelete}>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </Can>
-            </div>
-          </div>
-        </CardHeader>
+ <Can permission="PRODUCTS_DELETE">
+ <Button variant="destructive" onClick={handleDelete}>
+ <Trash2 className="h-4 w-4 mr-2" />
+ Delete
+ </Button>
+ </Can>
+ </div>
+ </div>
+ </CardHeader>
 
-        <CardContent>
-          <dl className="grid grid-cols-2 gap-4">
-            <div>
-              <dt className="text-sm font-medium text-muted-foreground">Price</dt>
-              <dd className="text-2xl font-bold">${product.price}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-muted-foreground">Stock</dt>
-              <dd className="text-2xl font-bold">{product.stock_quantity}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-muted-foreground">Created</dt>
-              <dd>{new Date(product.created_at).toLocaleDateString()}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-muted-foreground">Updated</dt>
-              <dd>{new Date(product.updated_at).toLocaleDateString()}</dd>
-            </div>
-          </dl>
-        </CardContent>
-      </Card>
-    </div>
-  );
+ <CardContent>
+ <dl className="grid grid-cols-2 gap-4">
+ <div>
+ <dt className="text-sm font-medium text-muted-foreground">Price</dt>
+ <dd className="text-2xl font-bold">${product.price}</dd>
+ </div>
+ <div>
+ <dt className="text-sm font-medium text-muted-foreground">Stock</dt>
+ <dd className="text-2xl font-bold">{product.stock_quantity}</dd>
+ </div>
+ <div>
+ <dt className="text-sm font-medium text-muted-foreground">Created</dt>
+ <dd>{new Date(product.created_at).toLocaleDateString()}</dd>
+ </div>
+ <div>
+ <dt className="text-sm font-medium text-muted-foreground">Updated</dt>
+ <dd>{new Date(product.updated_at).toLocaleDateString()}</dd>
+ </div>
+ </dl>
+ </CardContent>
+ </Card>
+ </div>
+ );
 };
 ```
 
@@ -966,15 +966,15 @@ import { ProductListPage } from '@/features/products/pages/ProductListPage';
 import { ProductDetailPage } from '@/features/products/pages/ProductDetailPage';
 
 export const productsIndexRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/products',
-  component: ProductListPage,
+ getParentRoute: () => rootRoute,
+ path: '/products',
+ component: ProductListPage,
 });
 
 export const productDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/products/$id',
-  component: ProductDetailPage,
+ getParentRoute: () => rootRoute,
+ path: '/products/$id',
+ component: ProductDetailPage,
 });
 ```
 
@@ -985,9 +985,9 @@ Register routes:
 import { productsIndexRoute, productDetailRoute } from './products';
 
 const routeTree = rootRoute.addChildren([
-  // ... existing routes
-  productsIndexRoute,
-  productDetailRoute,
+ // ... existing routes
+ productsIndexRoute,
+ productDetailRoute,
 ]);
 ```
 
@@ -1001,28 +1001,28 @@ Edit `frontend/src/locales/en/translation.json`:
 
 ```json
 {
-  "products": {
-    "title": "Products",
-    "description": "Manage your product catalog",
-    "add": "Add Product",
-    "edit": "Edit Product",
-    "delete": "Delete Product",
-    "search": "Search products...",
-    "empty": "No products found",
-    "deleteConfirm": "Are you sure you want to delete this product?",
-    "fields": {
-      "name": "Product Name",
-      "description": "Description",
-      "price": "Price",
-      "stock": "Stock Quantity"
-    },
-    "messages": {
-      "createSuccess": "Product created successfully",
-      "updateSuccess": "Product updated successfully",
-      "deleteSuccess": "Product deleted successfully",
-      "loadError": "Failed to load products"
-    }
-  }
+ "products": {
+ "title": "Products",
+ "description": "Manage your product catalog",
+ "add": "Add Product",
+ "edit": "Edit Product",
+ "delete": "Delete Product",
+ "search": "Search products...",
+ "empty": "No products found",
+ "deleteConfirm": "Are you sure you want to delete this product?",
+ "fields": {
+ "name": "Product Name",
+ "description": "Description",
+ "price": "Price",
+ "stock": "Stock Quantity"
+ },
+ "messages": {
+ "createSuccess": "Product created successfully",
+ "updateSuccess": "Product updated successfully",
+ "deleteSuccess": "Product deleted successfully",
+ "loadError": "Failed to load products"
+ }
+ }
 }
 ```
 
@@ -1032,28 +1032,28 @@ Edit `frontend/src/locales/es/translation.json`:
 
 ```json
 {
-  "products": {
-    "title": "Productos",
-    "description": "Gestiona tu catálogo de productos",
-    "add": "Agregar Producto",
-    "edit": "Editar Producto",
-    "delete": "Eliminar Producto",
-    "search": "Buscar productos...",
-    "empty": "No se encontraron productos",
-    "deleteConfirm": "¿Estás seguro de que quieres eliminar este producto?",
-    "fields": {
-      "name": "Nombre del Producto",
-      "description": "Descripción",
-      "price": "Precio",
-      "stock": "Cantidad en Stock"
-    },
-    "messages": {
-      "createSuccess": "Producto creado exitosamente",
-      "updateSuccess": "Producto actualizado exitosamente",
-      "deleteSuccess": "Producto eliminado exitosamente",
-      "loadError": "Error al cargar productos"
-    }
-  }
+ "products": {
+ "title": "Productos",
+ "description": "Gestiona tu catálogo de productos",
+ "add": "Agregar Producto",
+ "edit": "Editar Producto",
+ "delete": "Eliminar Producto",
+ "search": "Buscar productos...",
+ "empty": "No se encontraron productos",
+ "deleteConfirm": "¿Estás seguro de que quieres eliminar este producto?",
+ "fields": {
+ "name": "Nombre del Producto",
+ "description": "Descripción",
+ "price": "Precio",
+ "stock": "Cantidad en Stock"
+ },
+ "messages": {
+ "createSuccess": "Producto creado exitosamente",
+ "updateSuccess": "Producto actualizado exitosamente",
+ "deleteSuccess": "Producto eliminado exitosamente",
+ "loadError": "Error al cargar productos"
+ }
+ }
 }
 ```
 
@@ -1065,23 +1065,23 @@ Update components to use translations:
 import { useTranslation } from 'react-i18next';
 
 export const ProductListPage = () => {
-  const { t } = useTranslation();
+ const { t } = useTranslation();
 
-  return (
-    <div className="container py-8">
-      <h1 className="text-3xl font-bold">{t('products.title')}</h1>
-      <p className="text-muted-foreground">{t('products.description')}</p>
+ return (
+ <div className="container py-8">
+ <h1 className="text-3xl font-bold">{t('products.title')}</h1>
+ <p className="text-muted-foreground">{t('products.description')}</p>
 
-      <Button>
-        <Plus className="h-4 w-4 mr-2" />
-        {t('products.add')}
-      </Button>
+ <Button>
+ <Plus className="h-4 w-4 mr-2" />
+ {t('products.add')}
+ </Button>
 
-      <Input placeholder={t('products.search')} />
+ <Input placeholder={t('products.search')} />
 
-      {/* ... */}
-    </div>
-  );
+ {/* ... */}
+ </div>
+ );
 };
 ```
 
@@ -1089,16 +1089,16 @@ Update toast messages:
 
 ```typescript
 export const useCreateProduct = () => {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
+ const { t } = useTranslation();
+ const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (data: ProductCreate) => createProduct(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      toast.success(t('products.messages.createSuccess'));
-    },
-  });
+ return useMutation({
+ mutationFn: (data: ProductCreate) => createProduct(data),
+ onSuccess: () => {
+ queryClient.invalidateQueries({ queryKey: ['products'] });
+ toast.success(t('products.messages.createSuccess'));
+ },
+ });
 };
 ```
 

@@ -36,7 +36,7 @@
         "description": "Generate comprehensive unit and integration tests",
         "status": "active",
         "location": "backend/.claude/skills/fastapi-test"
-      },
+      }
     ],
     "frontend": [
       {

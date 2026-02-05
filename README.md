@@ -17,49 +17,53 @@ This monorepo provides a complete foundation for building SaaS applications with
 
 ### Backend (FastAPI)
 
-- ✅ **FastAPI** with async/await support
-- ✅ **PostgreSQL** with SQLAlchemy ORM (async)
-- ✅ **MongoDB** with Motor (async ODM)
-- ✅ **Alembic** database migrations
-- ✅ **JWT Authentication** (access + refresh tokens)
-- ✅ **RBAC** (roles & permissions)
-- ✅ **Repository Pattern** (clean architecture)
-- ✅ **Pydantic V2** validation
-- ✅ **pytest** testing framework
-- ✅ **OpenAPI/Swagger** auto-generated docs
-- ✅ **CORS** configuration
-- ✅ **Environment-based** config
+- [X] **FastAPI** with async/await support
+- [X] **PostgreSQL** with SQLAlchemy ORM (async)
+- [X] **MongoDB** with Motor (async ODM)
+- [X] **Alembic** database migrations
+- [X] **JWT Authentication** (access + refresh tokens)
+- [X] **RBAC** (roles & permissions)
+- [X] **Repository Pattern** (clean architecture)
+- [X] **Pydantic V2** validation
+- [X] **pytest** testing framework
+- [X] **OpenAPI/Swagger** auto-generated docs
+- [X] **CORS** configuration
+- [X] **Environment-based** config
 
 ### Frontend (React)
 
-- ✅ **React 18** with TypeScript
-- ✅ **Vite** for fast builds
-- ✅ **TanStack Router** (type-safe routing)
-- ✅ **TanStack Query** (server state management)
-- ✅ **Zustand** (client state management)
-- ✅ **shadcn/ui** component library
-- ✅ **Tailwind CSS** utility-first styling
-- ✅ **react-hook-form** + **Zod** validation
-- ✅ **axios** with interceptors (auto token refresh)
-- ✅ **Type generation** from backend OpenAPI
+- [X] **React 18** with TypeScript
+- [X] **Vite** for fast builds
+- [X] **React Router v6** (routing)
+- [X] **TanStack Query** (server state management)
+- [X] **Zustand** (client state management)
+- [X] **shadcn/ui** component library
+- [X] **Tailwind CSS** utility-first styling
+- [X] **react-hook-form** + **Zod** validation
+- [X] **axios** with interceptors (auto token refresh)
+- [X] **Type generation** from backend OpenAPI
 
 ### Integration
 
-- ✅ **Type-safe API** contracts (backend → frontend)
-- ✅ **Auto token refresh** on 401
-- ✅ **Permission checks** (backend enforces, frontend UX)
-- ✅ **Error handling** (backend exceptions → frontend toasts)
-- ✅ **Docker Compose** for local development
-- ✅ **Claude Code skills** (13 skills for rapid development)
+- [X] **Type-safe API** contracts (backend → frontend)
+- [X] **Auto token refresh** on 401
+- [X] **Permission checks** (backend enforces, frontend UX)
+- [X] **Error handling** (backend exceptions → frontend toasts)
+- [X] **Docker Compose** for local development
+- [X] **Claude Code skills** (13 skills for rapid development)
 
 ## Quick Start
 
 **Prerequisites**: Docker, Node.js 20+, Python 3.11+
 
 ```bash
-# 1. Clone repository
-git clone <repository-url>
+# 1. Clone repository with submodules
+git clone --recurse-submodules <repository-url>
 cd saas-boilerplate
+
+# If already cloned without submodules:
+git submodule init
+git submodule update
 
 # 2. Start all services
 docker compose up -d
@@ -67,17 +71,31 @@ docker compose up -d
 # 3. Access applications
 # Frontend: http://localhost:5173
 # Backend API: http://localhost:8000/docs
-# Login: admin@example.com / admin123
 ```
 
-**Detailed setup**: See `GETTING_STARTED.md`
+### Default Credentials
+
+[!] **SECURITY WARNING**: Change these immediately in production!
+
+- **Email**: `admin@example.com`
+- **Password**: `admin123`
+
+**Production Security Checklist**:
+- [ ] Change admin password via API or database
+- [ ] Generate new SECRET_KEY: `python -c "import secrets; print(secrets.token_hex(32))"`
+- [ ] Update BACKEND_CORS_ORIGINS in backend/.env
+- [ ] Set ENVIRONMENT=production and DEBUG=false
+- [ ] Use strong database passwords
+- [ ] Enable HTTPS with valid SSL certificates
+
+**Detailed setup**: See `docs/GETTING_STARTED.md`
 
 ## Documentation
 
 ### Quick Start & Setup
 
-- **[GETTING_STARTED.md](./GETTING_STARTED.md)** - Installation, setup, first steps (145 lines)
-- **[CLAUDE.md](./CLAUDE.md)** - Root orchestration context for Claude Code (150 lines) ⭐
+- **[docs/GETTING_STARTED.md](./docs/GETTING_STARTED.md)** - Installation, setup, first steps (145 lines)
+- **[CLAUDE.md](./CLAUDE.md)** - Root orchestration context for Claude Code (150 lines)
 
 ### Architecture & Design
 
@@ -99,13 +117,13 @@ docker compose up -d
 
 ### Claude Code Integration
 
-- **[CLAUDE_CODE_BEST_PRACTICES.md](./CLAUDE_CODE_BEST_PRACTICES.md)** - ⭐ Comprehensive guide (240 lines)
-  - Model selection (Sonnet vs Opus)
-  - Plan mode usage
-  - Token management strategies
-  - Workflows (two-stage, backend-first, debugging)
-  - Skills reference
-  - Checklists
+- **[docs/CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md)** - Comprehensive guide (240 lines)
+ - Model selection (Sonnet vs Opus)
+ - Plan mode usage
+ - Token management strategies
+ - Workflows (two-stage, backend-first, debugging)
+ - Skills reference
+ - Checklists
 
 - **[docs/prompts/CLAUDE_PROJECT_SETUP.md](./docs/prompts/CLAUDE_PROJECT_SETUP.md)** - Claude.ai Project setup for planning (180 lines)
 
@@ -113,56 +131,56 @@ docker compose up -d
 
 ```
 saas-boilerplate/
-├── backend/                    # FastAPI backend
-│   ├── app/
-│   │   ├── api/v1/endpoints/   # REST API routes
-│   │   ├── models/             # SQLAlchemy models
-│   │   ├── schemas/            # Pydantic schemas (validation)
-│   │   ├── repositories/       # Database access layer
-│   │   ├── services/           # Business logic layer
-│   │   ├── common/             # Shared utilities (auth, deps, exceptions)
-│   │   ├── core/               # Config, settings
-│   │   └── db/                 # Database setup, seed data
-│   ├── tests/                  # pytest tests
-│   ├── alembic/                # Database migrations
-│   ├── CLAUDE.md               # Backend context
-│   ├── docs/                   # Backend documentation
-│   └── requirements.txt        # Python dependencies
+├── backend/ # FastAPI backend
+│ ├── app/
+│ │ ├── api/v1/endpoints/ # REST API routes
+│ │ ├── models/ # SQLAlchemy models
+│ │ ├── schemas/ # Pydantic schemas (validation)
+│ │ ├── repositories/ # Database access layer
+│ │ ├── services/ # Business logic layer
+│ │ ├── common/ # Shared utilities (auth, deps, exceptions)
+│ │ ├── core/ # Config, settings
+│ │ └── db/ # Database setup, seed data
+│ ├── tests/ # pytest tests
+│ ├── alembic/ # Database migrations
+│ ├── CLAUDE.md # Backend context
+│ ├── docs/ # Backend documentation
+│ └── requirements.txt # Python dependencies
 │
-├── frontend/                   # React frontend
-│   ├── src/
-│   │   ├── features/           # Feature-based modules
-│   │   │   ├── auth/           # Authentication feature
-│   │   │   │   ├── api/        # API calls
-│   │   │   │   ├── hooks/      # React Query hooks
-│   │   │   │   ├── components/ # Feature components
-│   │   │   │   └── pages/      # Feature pages
-│   │   │   └── ...             # Other features
-│   │   ├── components/         # Shared components
-│   │   ├── lib/                # Utilities (api-client, utils)
-│   │   ├── types/              # TypeScript types
-│   │   │   └── generated/      # Auto-generated from backend
-│   │   ├── routes/             # TanStack Router routes
-│   │   └── main.tsx            # App entry point
-│   ├── CLAUDE.md               # Frontend context
-│   ├── docs/                   # Frontend documentation
-│   └── package.json            # Node dependencies
+├── frontend/ # React frontend
+│ ├── src/
+│ │ ├── features/ # Feature-based modules
+│ │ │ ├── auth/ # Authentication feature
+│ │ │ │ ├── api/ # API calls
+│ │ │ │ ├── hooks/ # React Query hooks
+│ │ │ │ ├── components/ # Feature components
+│ │ │ │ └── pages/ # Feature pages
+│ │ │ └── ... # Other features
+│ │ ├── components/ # Shared components
+│ │ ├── lib/ # Utilities (api-client, utils)
+│ │ ├── types/ # TypeScript types
+│ │ │ └── generated/ # Auto-generated from backend
+│ │ ├── routes/ # TanStack Router routes
+│ │ └── main.tsx # App entry point
+│ ├── CLAUDE.md # Frontend context
+│ ├── docs/ # Frontend documentation
+│ └── package.json # Node dependencies
 │
-├── docs/                       # Root documentation
-│   ├── ARCHITECTURE.md
-│   ├── FULLSTACK_WORKFLOW.md
-│   └── prompts/
-│       ├── integration-patterns.md
-│       └── CLAUDE_PROJECT_SETUP.md
+├── docs/ # Root documentation
+│ ├── ARCHITECTURE.md
+│ ├── FULLSTACK_WORKFLOW.md
+│ └── prompts/
+│ ├── integration-patterns.md
+│ └── CLAUDE_PROJECT_SETUP.md
 │
-├── .claude/                    # Claude Code configuration
-│   └── settings.json           # Skills configuration
+├── .claude/ # Claude Code configuration
+│ └── settings.json # Skills configuration
 │
-├── docker-compose.yml          # Docker services
-├── CLAUDE.md                   # Root context for Claude Code ⭐
-├── CLAUDE_CODE_BEST_PRACTICES.md  # Comprehensive Claude Code guide ⭐
-├── GETTING_STARTED.md          # Setup guide
-└── README.md                   # This file
+├── docker-compose.yml # Docker services
+├── CLAUDE.md # Root context for Claude Code 
+├── CLAUDE_CODE_BEST_PRACTICES.md # Comprehensive Claude Code guide 
+├── GETTING_STARTED.md # Setup guide
+└── README.md # This file
 ```
 
 ## Technology Stack
@@ -190,7 +208,7 @@ saas-boilerplate/
 | Framework | React 18+ | UI library |
 | Language | TypeScript 5+ | Type safety |
 | Build Tool | Vite 5+ | Fast builds, HMR |
-| Routing | TanStack Router | Type-safe routing |
+| Routing | React Router v6 | Declarative routing |
 | Server State | TanStack Query | Caching, fetching, mutations |
 | Client State | Zustand | Lightweight state management |
 | Forms | react-hook-form + Zod | Form handling, validation |
@@ -214,30 +232,27 @@ saas-boilerplate/
 ```bash
 cd backend
 
-# Activate virtual environment
-source venv/bin/activate
-
 # Install dependencies
-pip install -r requirements.txt
+uv sync
 
 # Run migrations
-alembic upgrade head
+uv run alembic upgrade head
 
 # Create migration after model changes
-alembic revision --autogenerate -m "description"
+uv run alembic revision --autogenerate -m "description"
 
 # Run tests
-pytest
+uv run pytest
 
-# Run with hot reload
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# Run development server with hot reload
+uv run dev
 
 # Format code
-black .
-isort .
+uv run black .
+uv run isort .
 
 # Lint
-flake8 .
+uv run flake8 .
 ```
 
 **See**: `backend/CLAUDE.md` for detailed workflow
@@ -289,7 +304,7 @@ docker compose restart backend
 # Stop all services
 docker compose down
 
-# Stop and remove volumes (⚠️ deletes data)
+# Stop and remove volumes ([!] deletes data)
 docker compose down -v
 
 # Execute commands in containers
@@ -333,11 +348,11 @@ docker compose --profile tools up -d
 ```
 
 - **pgAdmin** (PostgreSQL): http://localhost:5050
-  - Login: `admin@admin.com` / `admin`
-  - Add server: Host=`postgres`, Port=`5432`, Database=`saas_boilerplate`, User=`postgres`, Password=`postgres`
+ - Login: `admin@admin.com` / `admin`
+ - Add server: Host=`postgres`, Port=`5432`, Database=`saas_boilerplate`, User=`postgres`, Password=`postgres`
 
 - **mongo-express** (MongoDB): http://localhost:8081
-  - No login required (dev environment only)
+ - No login required (dev environment only)
 
 ### Health Check
 
@@ -370,12 +385,12 @@ This boilerplate is optimized for development with Claude Code via skills and co
 
 **Root** (5 skills):
 - **Active:**
-  - `/backend-first` - Backend-first fullstack workflow
-  - `/api-to-ui` - Frontend UI for existing backend APIs
-  - `/fullstack-feature` - Complete E2E feature
+ - `/backend-first` - Backend-first fullstack workflow
+ - `/api-to-ui` - Frontend UI for existing backend APIs
+ - `/fullstack-feature` - Complete E2E feature
 - **Planned:**
-  - `/api-contract` - Type-safe API contracts
-  - `/deploy` - Deployment automation
+ - `/api-contract` - Type-safe API contracts
+ - `/deploy` - Deployment automation
 
 ### Quick Example
 
@@ -403,25 +418,25 @@ cd frontend && npm run generate:types
 
 **Essential Reading** (for effective Claude Code usage):
 
-1. **[CLAUDE_CODE_BEST_PRACTICES.md](./CLAUDE_CODE_BEST_PRACTICES.md)** ⭐
-   - Comprehensive A-I guide covering:
-     - Model selection (Sonnet vs Opus)
-     - Plan mode (when/how to use)
-     - Token management (optimization strategies)
-     - Workflows (two-stage, backend-first, debugging)
-     - Skills reference
-     - Conversation management
-     - Checklists
+1. **[CLAUDE_CODE_BEST_PRACTICES.md](./CLAUDE_CODE_BEST_PRACTICES.md)**
+ - Comprehensive A-I guide covering:
+ - Model selection (Sonnet vs Opus)
+ - Plan mode (when/how to use)
+ - Token management (optimization strategies)
+ - Workflows (two-stage, backend-first, debugging)
+ - Skills reference
+ - Conversation management
+ - Checklists
 
-2. **[CLAUDE.md](./CLAUDE.md)** ⭐
-   - Root orchestration context
-   - Integration patterns quick reference
-   - Development workflows
-   - Critical gotchas
+2. **[CLAUDE.md](./CLAUDE.md)**
+ - Root orchestration context
+ - Integration patterns quick reference
+ - Development workflows
+ - Critical gotchas
 
 3. **[docs/prompts/CLAUDE_PROJECT_SETUP.md](./docs/prompts/CLAUDE_PROJECT_SETUP.md)**
-   - Set up Claude.ai Project for planning
-   - Two-stage workflow (Project → Code)
+ - Set up Claude.ai Project for planning
+ - Two-stage workflow (Project → Code)
 
 **See**: `CLAUDE.md` for complete documentation map
 
@@ -485,10 +500,10 @@ MIT License - See [LICENSE](./LICENSE) file for details
 
 ### Documentation
 
-- **Getting Started**: `GETTING_STARTED.md`
+- **Getting Started**: `docs/GETTING_STARTED.md`
 - **Architecture**: `docs/ARCHITECTURE.md`
 - **Workflows**: `docs/FULLSTACK_WORKFLOW.md`
-- **Claude Code**: `CLAUDE_CODE_BEST_PRACTICES.md` ⭐
+- **Claude Code**: `docs/CLAUDE_CODE_BEST_PRACTICES.md`
 - **Patterns**: `docs/prompts/integration-patterns.md`
 
 ### Common Tasks
@@ -498,15 +513,15 @@ MIT License - See [LICENSE](./LICENSE) file for details
 - **Add API endpoint**: Use `/fastapi-endpoint` skill
 - **Add React component**: Use `/react-component` skill
 - **Add new page**: Use `/react-page` skill
-- **Debug issues**: See `CLAUDE_CODE_BEST_PRACTICES.md` Section F
+- **Debug issues**: See `docs/CLAUDE_CODE_BEST_PRACTICES.md` Section F
 
 ### Issues & Questions
 
 - Check existing patterns in codebase
 - Search documentation
 - Review reference implementations:
-  - Backend: `backend/app/api/v1/endpoints/users.py`
-  - Frontend: `frontend/src/features/auth/`
+ - Backend: `backend/app/api/v1/endpoints/users.py`
+ - Frontend: `frontend/src/features/auth/`
 
 ## Roadmap
 
@@ -539,4 +554,4 @@ Optimized for [Claude Code](https://claude.com/claude-code) development workflow
 
 ---
 
-**Ready to build?** Start with `GETTING_STARTED.md` 🚀
+**Ready to build?** Start with `docs/GETTING_STARTED.md`

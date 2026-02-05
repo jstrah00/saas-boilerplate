@@ -12,22 +12,22 @@ Comprehensive guide to using Claude Code effectively with this boilerplate, cove
 ### When to Use Each
 
 **Use Sonnet (Default) for**:
-- ✅ Implementing features from clear requirements
-- ✅ Writing CRUD endpoints, forms, components
-- ✅ Following established patterns in the boilerplate
-- ✅ Refactoring with clear goals
-- ✅ Writing tests
-- ✅ Documentation updates
-- ✅ Bug fixes with clear reproduction steps
+- [X] Implementing features from clear requirements
+- [X] Writing CRUD endpoints, forms, components
+- [X] Following established patterns in the boilerplate
+- [X] Refactoring with clear goals
+- [X] Writing tests
+- [X] Documentation updates
+- [X] Bug fixes with clear reproduction steps
 
 **Use Opus for**:
-- ✅ Complex architectural decisions
-- ✅ Debugging obscure issues without clear cause
-- ✅ Designing new patterns not in boilerplate
-- ✅ Multi-system integration (3+ services)
-- ✅ Performance optimization (requires deep analysis)
-- ✅ Security reviews
-- ✅ Migrating between major framework versions
+- [X] Complex architectural decisions
+- [X] Debugging obscure issues without clear cause
+- [X] Designing new patterns not in boilerplate
+- [X] Multi-system integration (3+ services)
+- [X] Performance optimization (requires deep analysis)
+- [X] Security reviews
+- [X] Migrating between major framework versions
 
 ### Switching Models
 
@@ -51,11 +51,11 @@ Choose OPUS if the task involves:
 ├─ Debugging without clear cause → Opus
 ├─ Novel problems (no existing pattern) → Opus
 └─ Otherwise → Sonnet
-    ├─ Following existing patterns → Sonnet
-    ├─ Standard CRUD/forms → Sonnet
-    ├─ Clear bug fixes → Sonnet
-    └─ Is Sonnet struggling after 2-3 attempts?
-        └─ Yes → Switch to Opus
+ ├─ Following existing patterns → Sonnet
+ ├─ Standard CRUD/forms → Sonnet
+ ├─ Clear bug fixes → Sonnet
+ └─ Is Sonnet struggling after 2-3 attempts?
+ └─ Yes → Switch to Opus
 ```
 
 ## B. Plan Mode
@@ -67,17 +67,17 @@ Plan Mode lets Claude explore your codebase, design an implementation approach, 
 ### When to Use Plan Mode
 
 **Plan Mode is MANDATORY for**:
-- ✅ New features affecting 3+ files (non-negotiable)
-- ✅ Architectural changes (new patterns, refactoring)
-- ✅ Features with multiple valid approaches
-- ✅ When you're unsure of the best approach
-- ✅ Complex business logic requiring design review
+- [X] New features affecting 3+ files (non-negotiable)
+- [X] Architectural changes (new patterns, refactoring)
+- [X] Features with multiple valid approaches
+- [X] When you're unsure of the best approach
+- [X] Complex business logic requiring design review
 
 **Skip Plan Mode ONLY for**:
-- ✅ Single-file changes (typos, small tweaks)
-- ✅ Following existing patterns with clear requirements
-- ✅ Clear, specific instructions ("Fix bug on line 42")
-- ✅ Simple component additions (1-2 files max)
+- [X] Single-file changes (typos, small tweaks)
+- [X] Following existing patterns with clear requirements
+- [X] Clear, specific instructions ("Fix bug on line 42")
+- [X] Simple component additions (1-2 files max)
 
 ### How to Use Plan Mode
 
@@ -132,11 +132,11 @@ Claude: [Exits Plan Mode, implements according to plan]
 
 ### Plan Mode Benefits
 
-- ✅ **Prevents rework** - Catch design issues before implementation
-- ✅ **Saves tokens** - No back-and-forth after implementation
-- ✅ **Better architecture** - Time to consider trade-offs
-- ✅ **Alignment** - You approve the approach upfront
-- ✅ **Documentation** - Plan becomes implementation guide
+- [X] **Prevents rework** - Catch design issues before implementation
+- [X] **Saves tokens** - No back-and-forth after implementation
+- [X] **Better architecture** - Time to consider trade-offs
+- [X] **Alignment** - You approve the approach upfront
+- [X] **Documentation** - Plan becomes implementation guide
 
 ### Plan Review Checklist
 
@@ -154,9 +154,9 @@ When reviewing a plan, check:
 ### Pro Plan Limits
 
 - **Token Budget**:
-  - Per conversation: ~200K tokens maximum
-  - Monthly limit (Pro plan): ~500K tokens total
-  - Strategy: Use 2-3 conversations per feature to stay within monthly budget
+ - Per conversation: ~200K tokens maximum
+ - Monthly limit (Pro plan): ~500K tokens total
+ - Strategy: Use 2-3 conversations per feature to stay within monthly budget
 - **Context Window**: Unlimited via auto-summarization
 - **Usage**: Visible in UI during session
 
@@ -184,21 +184,21 @@ When reviewing a plan, check:
 
 **1. Use References Instead of Repeating**:
 ```
-❌ Bad: "The backend uses FastAPI with SQLAlchemy ORM and has a repository pattern
-         where repositories handle database queries and services handle business logic..."
+[-] Bad: "The backend uses FastAPI with SQLAlchemy ORM and has a repository pattern
+ where repositories handle database queries and services handle business logic..."
 
-✅ Good: "See backend/CLAUDE.md for architecture. I need a Product endpoint following
-         the User endpoint pattern."
+[X] Good: "See backend/CLAUDE.md for architecture. I need a Product endpoint following
+ the User endpoint pattern."
 ```
 
 **2. Use Skills (Pre-Optimized Prompts)**:
 ```
-❌ Bad: "Create a FastAPI endpoint for products with GET, POST, PUT, DELETE methods.
-         It should have a schema, repository, service, and router. Follow the project
-         structure and use permissions..."
+[-] Bad: "Create a FastAPI endpoint for products with GET, POST, PUT, DELETE methods.
+ It should have a schema, repository, service, and router. Follow the project
+ structure and use permissions..."
 
-✅ Good: /fastapi-endpoint
-         "Create CRUD endpoints for Product"
+[X] Good: /fastapi-endpoint
+ "Create CRUD endpoints for Product"
 ```
 
 **3. Start New Sessions for Unrelated Work**:
@@ -226,18 +226,18 @@ Total: 7K tokens (36% savings)
 
 **5. Be Specific with File References**:
 ```
-❌ Bad: "Look at the user code and implement products the same way"
-       [Claude searches, reads multiple files]
+[-] Bad: "Look at the user code and implement products the same way"
+ [Claude searches, reads multiple files]
 
-✅ Good: "Follow the pattern in backend/app/api/v1/endpoints/users.py:15-45"
-       [Claude reads specific lines]
+[X] Good: "Follow the pattern in backend/app/api/v1/endpoints/users.py:15-45"
+ [Claude reads specific lines]
 ```
 
 **6. Use Grep/Glob Effectively**:
 ```
-❌ Bad: [Reads all files in features/]
+[-] Bad: [Reads all files in features/]
 
-✅ Good: [Greps for specific pattern: "useAuth"]
+[X] Good: [Greps for specific pattern: "useAuth"]
 ```
 
 ### Monitoring Token Usage
@@ -277,7 +277,7 @@ Total: 7K tokens (36% savings)
 ```
 [In Claude.ai Project]
 User: "Design a notifications system with real-time updates via WebSockets,
-       email digest options, and notification preferences per user"
+ email digest options, and notification preferences per user"
 
 Claude Project:
 "Here's the architecture... [detailed design]
@@ -303,9 +303,9 @@ Prompt 3 (Frontend):
 ```
 
 **Benefits**:
-- ✅ Better planning in Project (unlimited context)
-- ✅ Faster implementation in Code (no re-planning)
-- ✅ Token-efficient (prompts pre-optimized)
+- [X] Better planning in Project (unlimited context)
+- [X] Faster implementation in Code (no re-planning)
+- [X] Token-efficient (prompts pre-optimized)
 
 **Setup**: See `docs/prompts/CLAUDE_PROJECT_SETUP.md`
 
@@ -333,27 +333,27 @@ Claude: [Reads User model, updates it, creates migration, updates frontend]
 
 ```
 1. Define models & migrations
-   /fastapi-model → "Create Product model with..."
-   /fastapi-migration → "Create migration for Product"
+ /fastapi-model → "Create Product model with..."
+ /fastapi-migration → "Create migration for Product"
 
 2. Add permissions
-   /fastapi-permission → "Add PRODUCTS_READ, PRODUCTS_WRITE, PRODUCTS_DELETE"
+ /fastapi-permission → "Add PRODUCTS_READ, PRODUCTS_WRITE, PRODUCTS_DELETE"
 
 3. Create API endpoints
-   /fastapi-endpoint → "Create CRUD for Product"
+ /fastapi-endpoint → "Create CRUD for Product"
 
 4. Write tests
-   /fastapi-test → "Test Product endpoints"
+ /fastapi-test → "Test Product endpoints"
 
 5. Generate frontend types
-   cd frontend && npm run generate:types
+ cd frontend && npm run generate:types
 
 6. Create frontend integration
-   /api-integration → "Create Product API hooks"
+ /api-integration → "Create Product API hooks"
 
 7. Build UI
-   /react-form → "Create ProductForm"
-   /react-page → "Create ProductsPage"
+ /react-form → "Create ProductForm"
+ /react-page → "Create ProductsPage"
 ```
 
 **See**: `docs/FULLSTACK_WORKFLOW.md` for details
@@ -364,22 +364,22 @@ Claude: [Reads User model, updates it, creates migration, updates frontend]
 
 ```
 1. Create mock data
-   const mockProducts = [...]
+ const mockProducts = [...]
 
 2. Build components
-   /react-component → "Create ProductCard"
-   /react-form → "Create ProductForm"
+ /react-component → "Create ProductCard"
+ /react-form → "Create ProductForm"
 
 3. Test UX flows with mocks
 
 4. Define backend contract
-   [Document needed API based on frontend usage]
+ [Document needed API based on frontend usage]
 
 5. Implement backend
-   [Follow Backend-First steps]
+ [Follow Backend-First steps]
 
 6. Replace mocks with real API
-   /api-integration → "Connect ProductForm to API"
+ /api-integration → "Connect ProductForm to API"
 ```
 
 ### Refactoring Workflow
@@ -388,18 +388,18 @@ Claude: [Reads User model, updates it, creates migration, updates frontend]
 
 ```
 1. Use Plan Mode
-   "I want to refactor the auth system to use httpOnly cookies instead of localStorage"
+ "I want to refactor the auth system to use httpOnly cookies instead of localStorage"
 
 2. Claude creates refactoring plan:
-   - Backend: Add cookie-based auth middleware
-   - Frontend: Remove localStorage usage
-   - Frontend: Update axios interceptor
-   - Testing: Verify auth flow still works
+ - Backend: Add cookie-based auth middleware
+ - Frontend: Remove localStorage usage
+ - Frontend: Update axios interceptor
+ - Testing: Verify auth flow still works
 
 3. Review plan for potential issues:
-   - [ ] Are existing users migrated?
-   - [ ] Is logout flow updated?
-   - [ ] Are all token references removed?
+ - [ ] Are existing users migrated?
+ - [ ] Is logout flow updated?
+ - [ ] Are all token references removed?
 
 4. Approve and implement
 
@@ -412,23 +412,23 @@ Claude: [Reads User model, updates it, creates migration, updates frontend]
 
 ```
 1. Provide clear context:
-   ❌ "Login is broken"
-   ✅ "Login returns 401 even with correct credentials. Backend logs show
-       'Invalid token signature'. Started after upgrading pyjwt library."
+ [-] "Login is broken"
+ [X] "Login returns 401 even with correct credentials. Backend logs show
+ 'Invalid token signature'. Started after upgrading pyjwt library."
 
 2. Share relevant info:
-   - Error messages (full stack trace)
-   - Recent changes (git diff)
-   - Steps to reproduce
-   - Expected vs actual behavior
+ - Error messages (full stack trace)
+ - Recent changes (git diff)
+ - Steps to reproduce
+ - Expected vs actual behavior
 
 3. Let Claude investigate:
-   - Reads relevant files
-   - Searches for similar patterns
-   - Identifies root cause
+ - Reads relevant files
+ - Searches for similar patterns
+ - Identifies root cause
 
 4. If stuck, switch to Opus:
-   "This is complex, let me use Opus for deeper analysis"
+ "This is complex, let me use Opus for deeper analysis"
 
 5. Apply fix and verify
 ```
@@ -518,7 +518,7 @@ Time: ~1 min
 
 ### Root Skills
 
-⚠️ **Note**: Skills marked as **(PLANNED)** are not yet available. Only invoke skills marked as **(ACTIVE)**.
+[!] **Note**: Skills marked as **(PLANNED)** are not yet available. Only invoke skills marked as **(ACTIVE)**.
 
 **backend-first** - Backend-first workflow (ACTIVE)
 ```
@@ -556,16 +556,16 @@ Status: Planned - not yet available
 ### When to Use Skills vs Manual Prompts
 
 **Use Skills**:
-- ✅ Following established patterns
-- ✅ Quick iteration needed
-- ✅ Want consistency across codebase
-- ✅ Token efficiency important
+- [X] Following established patterns
+- [X] Quick iteration needed
+- [X] Want consistency across codebase
+- [X] Token efficiency important
 
 **Use Manual Prompts**:
-- ✅ Custom requirements not in patterns
-- ✅ Exploring new approaches
-- ✅ One-off unusual tasks
-- ✅ Need to explain complex context
+- [X] Custom requirements not in patterns
+- [X] Exploring new approaches
+- [X] One-off unusual tasks
+- [X] Need to explain complex context
 
 ## F. Debugging
 
@@ -627,26 +627,26 @@ Opus: "Let me analyze this comprehensively..."
 
 **Instead of Entire Codebase**:
 ```
-❌ "The app is slow, investigate"
+[-] "The app is slow, investigate"
 
-✅ "User list page takes 5+ seconds to load. Minimal repro:
+[X] "User list page takes 5+ seconds to load. Minimal repro:
 
 Backend endpoint (users.py:45):
 ```python
 @router.get("/users")
 async def list_users(page: int = 1):
-    # This query is slow
-    users = await session.execute(
-        select(User).options(selectinload(User.roles))
-    )
-    return users.scalars().all()
+ # This query is slow
+ users = await session.execute(
+ select(User).options(selectinload(User.roles))
+ )
+ return users.scalars().all()
 ```
 
 Frontend (UserList.tsx:20):
 ```typescript
 const { data } = useQuery({
-  queryKey: ['users'],
-  queryFn: getUsers
+ queryKey: ['users'],
+ queryFn: getUsers
 });
 ```
 
@@ -660,14 +660,14 @@ Expected: <1s with pagination."
 ```
 Don't truncate errors:
 
-❌ "Error: ... [truncated]"
+[-] "Error: ... [truncated]"
 
-✅ "Full error:
+[X] "Full error:
 Traceback (most recent call last):
-  File "/app/main.py", line 45, in get_user
-    user = await session.get(User, user_id)
-  File "/usr/local/lib/python3.11/site-packages/sqlalchemy/...", line 234
-    ...
+ File "/app/main.py", line 45, in get_user
+ user = await session.get(User, user_id)
+ File "/usr/local/lib/python3.11/site-packages/sqlalchemy/...", line 234
+ ...
 sqlalchemy.exc.NoResultFound: No row was found when one was required"
 ```
 
@@ -677,22 +677,22 @@ sqlalchemy.exc.NoResultFound: No row was found when one was required"
 
 **One Feature Per Session**:
 ```
-✅ Good:
+[X] Good:
 Session 1: Implement Product catalog
 Session 2: Add order management
 Session 3: Fix login bug
 
-❌ Bad:
+[-] Bad:
 Session 1: Products + Orders + Login + Deploy + Refactor auth
 [Context becomes bloated, harder to follow]
 ```
 
 **When to Start New Session**:
-- ✅ Completed and committed a feature
-- ✅ Switching to unrelated task
-- ✅ Token usage approaching limit
-- ✅ Session became unfocused
-- ✅ Need different model (Sonnet → Opus)
+- [X] Completed and committed a feature
+- [X] Switching to unrelated task
+- [X] Token usage approaching limit
+- [X] Session became unfocused
+- [X] Need different model (Sonnet → Opus)
 
 ### Context Boundaries
 
@@ -708,21 +708,21 @@ Claude: [Can access previous context via summarization]
 
 **Don't Assume Context**:
 ```
-❌ "Continue where we left off yesterday"
-   [Claude doesn't remember yesterday's uncommitted work]
+[-] "Continue where we left off yesterday"
+ [Claude doesn't remember yesterday's uncommitted work]
 
-✅ "We implemented Product endpoints yesterday (see commit abc123).
-    Now add category filtering."
+[X] "We implemented Product endpoints yesterday (see commit abc123).
+ Now add category filtering."
 ```
 
 ### Effective Commits
 
 **Commit Frequently**:
 ```
-✅ After each feature
-✅ After fixing a bug
-✅ Before switching tasks
-✅ Before ending session
+[X] After each feature
+[X] After fixing a bug
+[X] Before switching tasks
+[X] Before ending session
 
 Benefits:
 - Claude can reference committed work
@@ -754,41 +754,41 @@ Benefits:
 ```
 1. Create Project in Claude.ai
 2. Upload knowledge files:
-   - backend/CLAUDE.md
-   - frontend/CLAUDE.md
-   - docs/ARCHITECTURE.md
-   - docs/FULLSTACK_WORKFLOW.md
-   - backend/docs/FEATURE_WORKFLOW.md
-   - frontend/docs/FEATURE_WORKFLOW.md
+ - backend/CLAUDE.md
+ - frontend/CLAUDE.md
+ - docs/ARCHITECTURE.md
+ - docs/FULLSTACK_WORKFLOW.md
+ - backend/docs/FEATURE_WORKFLOW.md
+ - frontend/docs/FEATURE_WORKFLOW.md
 3. Set custom instructions:
-   "You are an expert fullstack developer helping plan features for a
-    SaaS boilerplate. Generate detailed, actionable prompts for Claude Code."
+ "You are an expert fullstack developer helping plan features for a
+ SaaS boilerplate. Generate detailed, actionable prompts for Claude Code."
 ```
 
 ### Workflow Integration
 
 ```
 ┌─────────────────────────────────────┐
-│      Claude.ai Project              │
-│  (Planning & Architecture)          │
-│                                     │
-│  User: "Design notification system" │
-│  Claude: [Analyzes, designs plan]   │
-│  Output: Implementation prompts     │
+│ Claude.ai Project │
+│ (Planning & Architecture) │
+│ │
+│ User: "Design notification system" │
+│ Claude: [Analyzes, designs plan] │
+│ Output: Implementation prompts │
 └──────────────┬──────────────────────┘
-               │
-               │ Copy prompts
-               ▼
+ │
+ │ Copy prompts
+ ▼
 ┌─────────────────────────────────────┐
-│         Claude Code                 │
-│  (Implementation)                   │
-│                                     │
-│  Paste: Prompt 1 (Models)           │
-│  Claude: [Implements]               │
-│  Paste: Prompt 2 (Endpoints)        │
-│  Claude: [Implements]               │
-│  ...                                │
-│  Result: Working feature            │
+│ Claude Code │
+│ (Implementation) │
+│ │
+│ Paste: Prompt 1 (Models) │
+│ Claude: [Implements] │
+│ Paste: Prompt 2 (Endpoints) │
+│ Claude: [Implements] │
+│ ... │
+│ Result: Working feature │
 └─────────────────────────────────────┘
 ```
 

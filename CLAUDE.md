@@ -7,14 +7,14 @@ This is the **root orchestration layer** connecting backend (FastAPI) and fronte
 ## Monorepo Structure
 
 ```
-├── backend/          # FastAPI + PostgreSQL + MongoDB (port 8000)
-│   ├── CLAUDE.md     # Backend context (194 lines)
-│   └── docs/         # Backend workflows & patterns
-├── frontend/         # React + TypeScript + Vite (port 5173)
-│   ├── CLAUDE.md     # Frontend context (212 lines)
-│   └── docs/         # Frontend workflows & patterns
-├── docs/             # Integration & architecture docs
-└── CLAUDE.md         # THIS FILE - Root orchestration
+├── backend/ # FastAPI + PostgreSQL + MongoDB (port 8000)
+│ ├── CLAUDE.md # Backend context (194 lines)
+│ └── docs/ # Backend workflows & patterns
+├── frontend/ # React + TypeScript + Vite (port 5173)
+│ ├── CLAUDE.md # Frontend context (212 lines)
+│ └── docs/ # Frontend workflows & patterns
+├── docs/ # Integration & architecture docs
+└── CLAUDE.md # THIS FILE - Root orchestration
 ```
 
 **See**: `README.md` for complete documentation map.
@@ -24,8 +24,8 @@ This is the **root orchestration layer** connecting backend (FastAPI) and fronte
 - **Backend** (5 skills): `fastapi-endpoint`, `fastapi-model`, `fastapi-migration`, `fastapi-permission`, `fastapi-test`
 - **Frontend** (5 skills): `react-component`, `react-form`, `api-integration`, `react-feature`, `react-page`
 - **Root** (5 skills):
-  - Active: `backend-first`, `api-to-ui`, `fullstack-feature`
-  - Planned: `api-contract`, `deploy`
+ - Active: `backend-first`, `api-to-ui`, `fullstack-feature`
+ - Planned: `api-contract`, `deploy`
 
 ## Development Workflow
 
@@ -106,11 +106,11 @@ cd frontend && npm run generate:types
 ## Documentation Map
 
 ### Quick Start
-- **GETTING_STARTED.md** - New developer setup (145 lines)
+- **docs/GETTING_STARTED.md** - New developer setup (145 lines)
 - **README.md** - Project overview with all links (200 lines)
 
 ### Claude Code Usage
-- **CLAUDE_CODE_BEST_PRACTICES.md** - Comprehensive A-I guide (240 lines) ⭐
+- **docs/CLAUDE_CODE_BEST_PRACTICES.md** - Comprehensive A-I guide (240 lines)
 - **docs/prompts/CLAUDE_PROJECT_SETUP.md** - Claude.ai Project setup (180 lines)
 
 ### Architecture & Workflows
@@ -150,8 +150,8 @@ docker compose down -v && docker compose up -d
 
 ## Next Steps
 
-1. **New to project?** → Read `GETTING_STARTED.md`
+1. **New to project?** → Read `docs/GETTING_STARTED.md`
 2. **Planning a feature?** → Read `docs/FULLSTACK_WORKFLOW.md`
-3. **Using Claude Code?** → Read `CLAUDE_CODE_BEST_PRACTICES.md` ⭐
+3. **Using Claude Code?** → Read `docs/CLAUDE_CODE_BEST_PRACTICES.md`
 4. **Need architecture details?** → Read `docs/ARCHITECTURE.md`
 5. **Writing integration code?** → Read `docs/prompts/integration-patterns.md`
