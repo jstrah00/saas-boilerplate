@@ -72,6 +72,10 @@ services:
       # CORS
       CORS_ORIGINS: '["http://localhost:5173","http://localhost:3000"]'
 
+      # Stream Chat (Optional)
+      STREAM_API_KEY: ${STREAM_API_KEY:-}
+      STREAM_API_SECRET: ${STREAM_API_SECRET:-}
+
       # Environment
       ENVIRONMENT: development
       DEBUG: "true"

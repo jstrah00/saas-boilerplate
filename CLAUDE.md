@@ -71,6 +71,14 @@ cd frontend && npm run generate:types
 - **Frontend**: `<Can permission="USERS_READ">...</Can>` component
 - **Sync**: Frontend regenerates types from backend Permission enum
 
+### Chat (Stream Chat Integration)
+- **Provider**: Stream Chat (getstream.io) — hosted, no self-managed infrastructure
+- **Backend**: `POST /api/v1/chat/token` generates Stream token + upserts user; `GET /api/v1/chat/users` lists available users
+- **Frontend**: `src/features/chat/` — uses `stream-chat-react` SDK components
+- **Config**: `STREAM_API_KEY` + `STREAM_API_SECRET` in root `.env` (passed via docker-compose)
+- **Cost**: Free up to 1,000 MAU, then $399/mo for 10K MAU
+- **No database models** — Stream stores all messages and channels
+
 ### Error Handling
 - **Backend**: `app/common/exceptions.py` → HTTP exceptions with detail
 - **Frontend**: Interceptor catches errors → Toast notifications (mutations) or inline UI (queries)
