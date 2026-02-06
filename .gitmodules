@@ -1,6 +1,8 @@
 [submodule "frontend"]
 	path = frontend
 	url = https://github.com/jstrah00/frontend-boilerplate
+	branch = master
 [submodule "backend"]
 	path = backend
 	url = https://github.com/jstrah00/fastapi-boilerplate
+	branch = master
