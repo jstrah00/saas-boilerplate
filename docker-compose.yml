@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # =============================================================================
   # PostgreSQL Database
@@ -51,12 +49,19 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: saas-backend
     environment:
-      # Database connections
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/saas_boilerplate
+      # PostgreSQL
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: saas_boilerplate
+
+      # MongoDB
       MONGODB_URL: mongodb://admin:admin@mongodb:27017/saas_boilerplate?authSource=admin
+      MONGODB_DB: saas_boilerplate
 
       # API settings
       API_V1_PREFIX: /api/v1
@@ -65,13 +70,15 @@ services:
       SECRET_KEY: dev-secret-key-change-in-production
 
       # CORS
-      BACKEND_CORS_ORIGINS: '["http://localhost:5173","http://localhost:3000"]'
+      CORS_ORIGINS: '["http://localhost:5173","http://localhost:3000"]'
 
       # Environment
       ENVIRONMENT: development
       DEBUG: "true"
     ports:
       - "8000:8000"
+    # Mount local source code into the container for hot-reload during development.
+    # In production, remove this volume so the container uses the code baked into the image.
     volumes:
       - ./backend:/app
     networks:
@@ -81,7 +88,7 @@ services:
         condition: service_healthy
       mongodb:
         condition: service_healthy
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: sh -c "uv run python scripts/init_db.py && uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
       interval: 30s
@@ -95,20 +102,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: development
     container_name: saas-frontend
-    environment:
-      VITE_API_BASE_URL: http://localhost:8000
     ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "5173:80"
     networks:
       - saas-network
     depends_on:
       - backend
-    command: npm run dev
 
   # =============================================================================
   # Development Tools (Optional - use --profile tools)
