@@ -4,10 +4,10 @@ Applies when editing: `frontend/src/api/**`, `frontend/src/features/**/api/**`, 
 
 ## Types
 
-- Types come from `frontend/src/types/generated/api.ts` (auto-generated from `http://localhost:8000/openapi.json`).
-- Regenerate after backend schema changes: `cd frontend && npm run generate:types`.
-- NEVER hand-write API request/response types — always import from generated.
-- NEVER edit `src/types/generated/api.ts` directly.
+- **Today**: domain types live in `frontend/src/types/models.ts` (hand-maintained, kept in sync with backend manually). Every feature imports from there: `import type { User, Item } from '@/types/models'`.
+- **Target**: migrate to `frontend/src/types/generated/api.ts`, auto-generated from `http://localhost:8000/openapi.json` via `cd frontend && npm run generate:types`. Until that migration runs, `src/types/generated/` exists empty in the tree.
+- When you add a backend field, update `models.ts` so the frontend stays type-correct — and re-run `npm run generate:types` if you're working with the OpenAPI doc to keep the future migration cheap.
+- NEVER edit `src/types/generated/api.ts` directly once it exists (auto-generated).
 
 ## HTTP client
 
