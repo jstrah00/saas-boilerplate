@@ -2,6 +2,8 @@
 
 A production-ready fullstack SaaS boilerplate with FastAPI backend and React frontend, optimized for rapid development with Claude Code.
 
+> **Latest audit**: [`docs/audits/claude-setup-audit-2026-04-25.md`](docs/audits/claude-setup-audit-2026-04-25.md) — covers AI config, code patterns, and severity-ranked findings (3 🔴 CRITICAL closed by the alignment plan in `docs/plans/`).
+
 ## Overview
 
 This monorepo provides a complete foundation for building SaaS applications with:
