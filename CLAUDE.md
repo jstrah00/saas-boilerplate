@@ -7,14 +7,16 @@ This is the **root orchestration layer** connecting backend (FastAPI) and fronte
 ## Monorepo Structure
 
 ```
-├── backend/ # FastAPI + PostgreSQL + MongoDB (port 8000)
-│ ├── CLAUDE.md # Backend context (194 lines)
-│ └── docs/ # Backend workflows & patterns
-├── frontend/ # React + TypeScript + Vite (port 5173)
-│ ├── CLAUDE.md # Frontend context (212 lines)
-│ └── docs/ # Frontend workflows & patterns
-├── docs/ # Integration & architecture docs
-└── CLAUDE.md # THIS FILE - Root orchestration
+├── backend/                # FastAPI + PostgreSQL + MongoDB (port 8000)
+│   ├── CLAUDE.md           # Backend context
+│   └── docs/               # Backend workflows & patterns
+├── frontend/               # React + TypeScript + Vite (port 5173)
+│   ├── CLAUDE.md           # Frontend context
+│   └── docs/               # Frontend workflows & patterns
+├── docs/                   # Integration, architecture, audits, plans
+├── .claude/                # Subagents, hooks, rules, skills, slash commands
+├── AGENTS.md               # Tool-agnostic pointer to CLAUDE.md
+└── CLAUDE.md               # THIS FILE - Root orchestration
 ```
 
 **See**: `README.md` for complete documentation map.
@@ -60,16 +62,16 @@ cd frontend && npm run generate:types
 ```
 
 ### Authentication Flow
-- **Login**: POST `/api/v1/auth/login` → `{access_token, refresh_token}`
-- **Storage**: localStorage (access 30min, refresh 7d)
-- **Interceptor**: Request adds Bearer token, Response catches 401 → auto-refresh
-- **Backend**: `app/common/dependencies.py:get_current_user()`
-- **Frontend**: `src/features/auth/hooks/useAuth.ts`
+- **Login**: POST `/api/v1/auth/login` → response sets httpOnly cookies (access ~30 min, refresh 7 d / 30 d "remember me").
+- **Storage**: httpOnly + secure + samesite=lax cookies. JS does NOT touch tokens. Migration from localStorage Bearer happened on 2026-02-06.
+- **Interceptor**: `frontend/src/api/client.ts` axios instance with `withCredentials: true`. Cookies travel automatically. 401 → redirect to `/login`; 403 → redirect to `/unauthorized`. No client-side auto-refresh — refresh is handled server-side via the refresh-token cookie.
+- **Backend**: `backend/app/api/deps.py:get_current_user` (around line 138). Reads cookie or `Authorization` header.
+- **Frontend**: `frontend/src/features/auth/hooks/use-login.ts` for the login mutation; `frontend/src/store/slices/authSlice.ts` for the resulting Zustand state.
 
 ### Permission System
-- **Backend**: `@require_permissions(Permission.USERS_READ)` decorator
-- **Frontend**: `<Can permission="USERS_READ">...</Can>` component
-- **Sync**: Frontend regenerates types from backend Permission enum
+- **Backend**: `@require_permissions(Permission.USERS_READ)` decorator at the API layer (never in services). See `backend/app/common/permissions.py`.
+- **Frontend**: `usePermissions()` hook in `frontend/src/hooks/use-permissions.ts` (`hasPermission`, `hasAllPermissions`, `hasAnyPermission`) and `<ProtectedRoute requiredPermissions={[...]}>` in `frontend/src/routes/protected-route.tsx`. There is no `<Can>` component.
+- **Sync**: Frontend regenerates types from backend OpenAPI via `cd frontend && npm run generate:types`.
 
 ### Error Handling
 - **Backend**: `app/common/exceptions.py` → HTTP exceptions with detail
@@ -103,26 +105,45 @@ cd frontend && npm run generate:types
 - Frontend checks for UX only (can be bypassed)
 - **Don't** rely solely on frontend checks
 
+### Multi-tenancy: NOT IMPLEMENTED
+- The repo is structured as a SaaS boilerplate but does **not** ship an `Organization` / tenant model.
+- `Item` is owned per-user via `owner_id` (FK to `users.id`) — see `backend/app/models/postgres/item.py:85`.
+- Every query that returns user-scoped data MUST filter by `owner_id`. Cross-user reads are a security bug.
+- When `Organization` is introduced, queries must additionally filter by `organization_id`. Add a regression test before that refactor.
+- **See**: `docs/audits/claude-setup-audit-2026-04-25.md` (CRITICAL-1) for the full gap.
+
+## Path-scoped rules
+
+Rules referenced by area of the codebase. Read the relevant one before editing files in that path:
+- @.claude/rules/backend-data-layer.md — repository/service pattern, ownership filtering.
+- @.claude/rules/backend-migrations.md — Alembic autogenerate workflow.
+- @.claude/rules/frontend-api.md — generated types, apiClient, httpOnly cookies, query keys.
+
 ## Documentation Map
 
 ### Quick Start
-- **docs/GETTING_STARTED.md** - New developer setup (145 lines)
-- **README.md** - Project overview with all links (200 lines)
+- **docs/GETTING_STARTED.md** — New developer setup
+- **README.md** — Project overview with all links
 
 ### Claude Code Usage
-- **docs/CLAUDE_CODE_BEST_PRACTICES.md** - Comprehensive A-I guide (240 lines)
-- **docs/prompts/CLAUDE_PROJECT_SETUP.md** - Claude.ai Project setup (180 lines)
+- **docs/CLAUDE_CODE_BEST_PRACTICES.md** — Comprehensive A-I guide
+- **docs/prompts/CLAUDE_PROJECT_SETUP.md** — Claude.ai Project setup
 
 ### Architecture & Workflows
-- **docs/ARCHITECTURE.md** - System design, database strategy, auth flow (220 lines)
-- **docs/FULLSTACK_WORKFLOW.md** - E2E feature implementation (270 lines)
-- **docs/prompts/integration-patterns.md** - API patterns with code (400 lines)
+- **docs/ARCHITECTURE.md** — System design, database strategy, auth flow
+- **docs/FULLSTACK_WORKFLOW.md** — E2E feature implementation
+- **docs/prompts/integration-patterns.md** — API patterns with code
+
+### Audits & Plans
+- **docs/audits/** — One-off audits (latest: `claude-setup-audit-2026-04-25.md`)
+- **docs/plans/** — Multi-step implementation plans
+- **docs/gotchas.md** — Running log of real incidents and their fixes
 
 ### Layer-Specific
-- **backend/CLAUDE.md** - Backend context (194 lines)
-- **backend/docs/** - Backend workflows & patterns
-- **frontend/CLAUDE.md** - Frontend context (212 lines)
-- **frontend/docs/** - Frontend workflows & patterns
+- **backend/CLAUDE.md** — Backend context
+- **backend/docs/** — Backend workflows & patterns
+- **frontend/CLAUDE.md** — Frontend context
+- **frontend/docs/** — Frontend workflows & patterns
 
 ## Dev Tools
 
