@@ -230,11 +230,11 @@
     ]
   },
   "references": {
-    "backend_example": "backend/app/api/v1/endpoints/users.py",
+    "backend_example": "backend/app/api/v1/users.py",
     "frontend_example": "frontend/src/features/auth/",
-    "model_example": "backend/app/models/user.py",
+    "model_example": "backend/app/models/postgres/user.py",
     "component_example": "frontend/src/features/auth/components/",
-    "form_example": "frontend/src/features/auth/components/LoginForm.tsx"
+    "form_example": "frontend/src/features/auth/components/login-form.tsx"
   },
   "permissions": {
     "allow": [
