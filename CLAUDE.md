@@ -119,6 +119,21 @@ Rules referenced by area of the codebase. Read the relevant one before editing f
 - @.claude/rules/backend-migrations.md — Alembic autogenerate workflow.
 - @.claude/rules/frontend-api.md — generated types, apiClient, httpOnly cookies, query keys.
 
+## Commit convention
+
+Conventional Commits, lightweight. No commitlint enforcement — convention is on the author.
+
+- `feat:` user-visible feature.
+- `fix:` bug fix.
+- `chore:` tooling, deps, configs, internal moves.
+- `docs:` markdown changes only.
+- `test:` adds/changes tests only.
+- `refactor:` code restructure with no behavior change.
+- `ci:` workflow changes (rare here — backend CI is intentionally absent).
+- Optional scope in parens: `feat(auth):`, `chore(claude):`, `docs(backend):`.
+
+Sub-commits when bumping a submodule pointer in the super-repo: prefix `chore:` and name what was bumped, e.g. `chore: bump backend submodule for X`.
+
 ## Documentation Map
 
 ### Quick Start

@@ -70,7 +70,7 @@ saas-boilerplate/
 │   │   └── db/                    postgres + mongodb conexión
 │   ├── alembic/versions/          1 sola migración (refresh blacklist)
 │   ├── tests/                     unit + integration (2 archivos)
-│   └── .claude/skills/            6 skills (fastapi-*)
+│   └── .claude/skills/            6 skills (fastapi-* + feature-from-plan)
 ├── frontend/                      (submódulo, React+Vite)
 │   ├── src/
 │   │   ├── api/                   client, endpoints, interceptors
@@ -82,7 +82,7 @@ saas-boilerplate/
 │   │   ├── hooks/                 use-permissions, etc.
 │   │   ├── types/generated/       OpenAPI types (auto-gen)
 │   │   └── i18n/                  config + locales/{en,es}
-│   ├── .github/workflows/ci.yml   ✅ CI configurado
+│   ├── .github/workflows/ci.yml   ✅ CI configurado (frontend solamente)
 │   └── .claude/skills/            5 skills (react-*)
 ├── docs/                          18 docs cross-cutting
 ├── .claude/                       settings.json + 3 skills root
@@ -95,11 +95,11 @@ saas-boilerplate/
 
 | Componente | Estado | Notas |
 |---|---|---|
-| `CLAUDE.md` (root) | ⚠️ Bien estructurado pero con info DESACTUALIZADA | 157L. Headers OK. Pero líneas 64-67, 66, 71, 11, 14 contienen errores fácticos (ver §5). |
-| `backend/CLAUDE.md` | ✅ Detallado, focused | 250L. 7-step workflow + RBAC + gotchas. Sin gap de exactitud. |
-| `frontend/CLAUDE.md` | ✅ Bien | 200L. Patterns de state/forms/auth/routing/i18n. |
+| `CLAUDE.md` (root) | ⚠️ Bien estructurado pero con info DESACTUALIZADA | Headers OK. Pero secciones de Authentication Flow + Permission System + refs a `app/common/dependencies.py` + `<Can>` componente contienen errores fácticos (ver §5). |
+| `backend/CLAUDE.md` | ✅ Detallado, focused | 7-step workflow + RBAC + gotchas. Sin gap de exactitud. |
+| `frontend/CLAUDE.md` | ⚠️ También con info DESACTUALIZADA | Patterns claros, pero auth flow describe localStorage/Bearer/auto-refresh cuando ya migró a httpOnly cookies (mismas inexactitudes que el root). |
 | `AGENTS.md` | ❌ Ausente | Sin espejo tool-agnostic. |
-| `.claude/settings.json` (root) | ⚠️ 233L pero sin guardrails | Define monorepo, skills, docs, ports. **NO hooks. NO permissions allow/ask/deny granulares.** |
+| `.claude/settings.json` (root) | ⚠️ Custom JSON, no schema Claude Code real | Define monorepo, skills, docs, ports. **NO hooks. NO permissions allow/ask/deny granulares.** Resuelto durante remediation: bloque `permissions` + `hooks` agregados sin tocar lo existente. |
 | `.claude/settings.local.json` | ⚠️ Mínimo | Solo `Bash(find:*)`. Sin deny rules. |
 | `.mcp.json` | ❌ Ausente | Ningún MCP server configurado. |
 | Subagents (`.claude/agents/`) | ❌ Ausente | Ningún subagent definido. |
@@ -147,9 +147,9 @@ saas-boilerplate/
 | react-hook-form + Zod resolver | ✅ Consistente | Ej `features/auth/schemas/login.schema.ts:1-9` |
 | Code splitting (React.lazy) | ✅ | `frontend/src/routes/index.tsx:1-14` |
 | Conventional commits | 🟡 Inconsistente | `git log` muestra mezcla: `feat:`, `claude improved...`, `improve docs`. |
-| CI backend | 🔴 Ausente | No hay `backend/.github/workflows/`. |
+| CI backend | ⏭ Skipped | Decisión del usuario: sin CI backend en este repo. |
 | CI frontend | ✅ | `frontend/.github/workflows/ci.yml`: lint + test + build + docker. |
-| Pre-commit hooks | ❌ | Ni en root ni en submódulos. |
+| Pre-commit hooks | ✅ | `backend/.pre-commit-config.yaml` (ruff + mypy + hygiene). |
 | eslint-plugin-jsx-a11y | 🟡 Ausente | `frontend/.eslintrc.cjs` no lo incluye. |
 | E2E tests (Playwright) | ❌ | Solo unit/integration con Vitest. |
 | MSW disponible | ✅ | dep instalada, no aún cableada en setup. |
@@ -195,26 +195,26 @@ saas-boilerplate/
 
 ### 🟡 HIGH
 
-| ID | Issue | Evidencia |
-|---|---|---|
-| HIGH-1 | Sin CI backend | `backend/.github/` no existe |
-| HIGH-2 | Schema inicial via `init_postgres()`, no Alembic | `backend/app/main.py:106-107` |
-| HIGH-3 | Sin pre-commit hooks pese a que CLAUDE.md exige docstrings | — |
-| HIGH-4 | Sin tests de aislamiento per-user (user A vs items user B) | `backend/tests/` |
-| HIGH-5 | Sin Request ID middleware | `backend/app/main.py` |
-| HIGH-6 | Sin `eslint-plugin-jsx-a11y` | `frontend/.eslintrc.cjs:1-20` |
-| HIGH-7 | Sin E2E tests | `frontend/` |
-| HIGH-8 | Conventional commits inconsistentes | `git log --oneline` |
+| ID | Issue | Evidencia | Status |
+|---|---|---|---|
+| HIGH-1 | Sin CI backend | `backend/.github/` no existe | ⏭ Skipped por decisión del usuario |
+| HIGH-2 | Schema inicial via `init_postgres()`, no Alembic | `backend/app/main.py:106-107` | ✅ Cerrado: `init_postgres()` removido; Alembic owner en todos los environments |
+| HIGH-3 | Sin pre-commit hooks pese a que CLAUDE.md exige docstrings | — | ✅ Cerrado: `backend/.pre-commit-config.yaml` |
+| HIGH-4 | Sin tests de aislamiento per-user (user A vs items user B) | `backend/tests/` | ✅ Cerrado: `tests/integration/test_cross_user_leak.py` (3 tests, requieren DB) |
+| HIGH-5 | Sin Request ID middleware | `backend/app/main.py` | ✅ Cerrado: `RequestIDMiddleware` con structlog contextvars + X-Request-ID echo |
+| HIGH-6 | Sin `eslint-plugin-jsx-a11y` | `frontend/.eslintrc.cjs` | ✅ Cerrado: plugin agregado, override para shadcn primitives |
+| HIGH-7 | Sin E2E tests | `frontend/` | ⏭ Skipped en este pase |
+| HIGH-8 | Conventional commits inconsistentes | `git log --oneline` | ✅ Cerrado: convención documentada en CLAUDE.md root |
 
 ### 🟢 MEDIUM
 
-| ID | Issue |
-|---|---|
-| MED-1 | Rate limiting solo en `/login` (5/min); resto de endpoints sin throttling |
-| MED-2 | Sin Sentry/New Relic; observabilidad limitada a Telegram alerts en CriticalError |
-| MED-3 | `settings.local.json` solo permite `Bash(find:*)` — falta granularity |
-| MED-4 | `.gitignore` root no excluye `.claude/worktrees/` ni `CLAUDE.local.md` |
-| MED-5 | `IMPLEMENTATION_SUMMARY.md` (11.5 KB) en root contamina contexto inicial — el usuario aprobó borrarlo |
+| ID | Issue | Status |
+|---|---|---|
+| MED-1 | Rate limiting solo en `/login` (5/min); resto de endpoints sin throttling | ✅ Cerrado: slowapi `default_limits=["120/minute","1000/hour"]` + `SlowAPIMiddleware` global |
+| MED-2 | Sin Sentry/New Relic; observabilidad limitada a Telegram alerts en CriticalError | ⏭ Skipped — requiere terceros |
+| MED-3 | `settings.local.json` solo permite `Bash(find:*)` — falta granularity | ✅ Cerrado: bloque `permissions` (allow/ask/deny) en `.claude/settings.json` |
+| MED-4 | `.gitignore` root no excluye `.claude/worktrees/` ni `CLAUDE.local.md` | ✅ Cerrado |
+| MED-5 | `IMPLEMENTATION_SUMMARY.md` (11.5 KB) en root contamina contexto inicial | ✅ Cerrado: borrado |
 
 ---
 

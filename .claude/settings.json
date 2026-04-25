@@ -36,6 +36,12 @@
         "description": "Generate comprehensive unit and integration tests",
         "status": "active",
         "location": "backend/.claude/skills/fastapi-test"
+      },
+      {
+        "name": "feature-from-plan",
+        "description": "Execute a structured Claude.ai Project plan against the backend codebase",
+        "status": "active",
+        "location": "backend/.claude/skills/feature-from-plan"
       }
     ],
     "frontend": [

@@ -11,7 +11,7 @@
 3 gaps 🔴 CRITICAL del audit + 8 gaps 🟡 HIGH se cierran con cambios divididos en 3 Tiers.
 
 - **Tier 1** (~15 archivos nuevos, riesgo zero): subagents, hooks, slash commands, path-scoped rules, `.mcp.json`, `AGENTS.md`, `.gitignore`/worktree config, `docs/plans/` y `docs/gotchas.md`. Reversible con `git rm`.
-- **Tier 2** (~6 modificaciones a archivos existentes, justificadas, review por commit): fix de inexactitudes en `CLAUDE.md`, doc del gap multi-tenant, CI backend, eliminar stale changelog, opcional pre-commit.
+- **Tier 2** (modificaciones a archivos existentes, justificadas, review por commit): fix de inexactitudes en `CLAUDE.md`, doc del gap multi-tenant, eliminar stale changelog, opcional pre-commit. _(Backend CI fue evaluado y luego revertido por decisión del usuario — ver §2.3.)_
 - **Tier 3** (~2 refactors de código con regression test antes de cada uno): validator de SECRET_KEY en producción, test cross-user isolation.
 
 **NO se va a tocar**: lógica de auth/refresh/blacklist, UI components, schemas existentes, migraciones committeadas, dependencias, skills existentes, `.env*`, `.gitmodules`.
@@ -204,34 +204,11 @@ Sumar al final una sección corta "Multi-tenancy Status" con: estado (NOT IMPLEM
 
 **Commit**: `docs(backend): document multi-tenancy gap and policy`
 
-## 2.3 `backend/.github/workflows/ci.yml` — crear (HIGH-1)
+## 2.3 ~~Backend CI workflow~~ — REVERTED
 
-Espejo del frontend CI:
-```yaml
-name: Backend CI
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: app_user
-          POSTGRES_PASSWORD: app_dev_password
-          POSTGRES_DB: app_db
-        ports: ['5432:5432']
-        options: --health-cmd pg_isready
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
-      - run: uv sync
-      - run: uv run ruff check app tests
-      - run: uv run mypy app
-      - run: uv run pytest --cov=app
-```
+El workflow se agregó inicialmente y luego se removió por decisión del usuario ("no quiero CI en este repo"). Pre-commit (§2.4) queda como única gate automática local. HIGH-1 marcado como **skipped**.
 
-**Commit**: `ci(backend): add github actions workflow with ruff, mypy, pytest`
+Si se reactiva en el futuro: el workflow original (ruff format/check, mypy, pytest con servicios de Postgres + Mongo) está en git history.
 
 ## 2.4 `backend/.pre-commit-config.yaml` — opcional, requiere tu OK (HIGH-3)
 
@@ -257,7 +234,7 @@ Una línea al inicio (o en sección Documentation): "Latest audit: `docs/audits/
 |---|---|---|---|
 | 1 | `CLAUDE.md` (root) | EDIT | CRITICAL-3 |
 | 2 | `backend/CLAUDE.md` | EDIT | CRITICAL-1 (docs) |
-| 3 | `backend/.github/workflows/ci.yml` | NEW | HIGH-1 |
+| 3 | ~~`backend/.github/workflows/ci.yml`~~ | REVERTED | HIGH-1 marked skipped per user |
 | 4 | `backend/.pre-commit-config.yaml` | NEW (opt-in) | HIGH-3 |
 | 5 | `README.md` | EDIT | discoverability |
 | 6 | `IMPLEMENTATION_SUMMARY.md` | DELETE | MED-5 |
@@ -420,7 +397,7 @@ Cada tier tiene su propia aprobación. Podés decir "OK T1, esperá T2".
 | `AGENTS.md`, `.gitignore`, `.worktreeinclude` | T1 | Convenciones |
 | `CLAUDE.md` (root) | T2 | Fix CRITICAL-3 |
 | `backend/CLAUDE.md` | T2 | Doc CRITICAL-1 |
-| `backend/.github/workflows/ci.yml` | T2 | CI |
+| ~~`backend/.github/workflows/ci.yml`~~ | T2 reverted | — |
 | `IMPLEMENTATION_SUMMARY.md` | T2 | Delete |
 | `backend/app/core/config.py` | T3 | SECRET_KEY validator |
 | `backend/tests/unit/test_config.py` | T3 | Regression CRITICAL-2 |
