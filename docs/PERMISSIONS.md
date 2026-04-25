@@ -197,7 +197,7 @@ async def delete_user(
 
 ### 4. Permission Check Implementation
 
-The `require_permissions()` dependency (in `backend/app/common/dependencies.py`):
+The `require_permissions()` dependency (in `backend/app/common/permissions.py`):
 
 ```python
 from fastapi import Depends, HTTPException, status
@@ -334,45 +334,24 @@ export const usePermissions = () => {
 };
 ```
 
-### Permission Component
+### Inline Permission Gating
 
-Use `<Can>` component to conditionally render UI:
+There is **no `<Can>` component** in this project. Use the `usePermissions()` hook (`frontend/src/hooks/use-permissions.ts`) directly:
 
-```typescript
-// frontend/src/components/auth/Can.tsx
-import { usePermissions } from '@/hooks/use-permissions';
-
-interface CanProps {
- permission: string;
- children: React.ReactNode;
- fallback?: React.ReactNode;
-}
-
-export const Can = ({ permission, children, fallback = null }: CanProps) => {
- const { hasPermission } = usePermissions();
-
- if (!hasPermission(permission)) {
- return <>{fallback}</>;
- }
-
- return <>{children}</>;
-};
-```
-
-**Usage**:
 ```tsx
-// Hide button if user doesn't have permission
-<Can permission="users:delete">
- <Button variant="destructive">Delete User</Button>
-</Can>
+import { usePermissions } from '@/hooks/use-permissions'
 
-// Show different UI for users without permission
-<Can
- permission="reports:export"
- fallback={<Button disabled>Upgrade to Premium</Button>}
->
- <Button>Export Report</Button>
-</Can>
+const { hasPermission, hasAllPermissions, hasAnyPermission } = usePermissions()
+
+// Hide button if the user doesn't have the permission
+{hasPermission('users:delete') && (
+  <Button variant="destructive">Delete User</Button>
+)}
+
+// Conditional fallback
+{hasPermission('reports:export')
+  ? <Button>Export Report</Button>
+  : <Button disabled>Upgrade to Premium</Button>}
 ```
 
 ### Protected Routes
@@ -520,10 +499,13 @@ async def create_invoice(
 
 **5. Update Frontend** (after migration):
 ```typescript
-// Use in components
-<Can permission="invoices:export">
- <Button onClick={exportToPDF}>Export to PDF</Button>
-</Can>
+// Use in components — usePermissions hook (no <Can> component)
+import { usePermissions } from '@/hooks/use-permissions'
+
+const { hasPermission } = usePermissions()
+{hasPermission('invoices:export') && (
+  <Button onClick={exportToPDF}>Export to PDF</Button>
+)}
 
 // Use in routes
 <Route
@@ -717,10 +699,9 @@ async def delete_user(
 ```
 
 ```typescript
-// Frontend: UX only (can be bypassed)
-<Can permission="users:delete">
- <Button>Delete</Button>
-</Can>
+// Frontend: UX only (can be bypassed) — usePermissions hook
+const { hasPermission } = usePermissions()
+{hasPermission('users:delete') && <Button>Delete</Button>}
 ```
 
 ### 4. Audit Permission Changes
@@ -728,7 +709,7 @@ async def delete_user(
 Log when permissions are checked:
 
 ```python
-# backend/app/common/dependencies.py
+# backend/app/common/permissions.py
 logger.info(
  "permission_check",
  user_id=user.id,

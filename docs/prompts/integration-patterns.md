@@ -1,5 +1,7 @@
 # API Integration Patterns
 
+> **⚠️ Note (2026-02-06)**: The auth examples below — `localStorage.getItem('access_token')`, `Authorization: Bearer ...` set manually from JS, client-side auto-refresh interceptors, `<Can permission="...">` component, the `app/common/dependencies.py` path — **predate the cookie migration**. Current reality: httpOnly cookies via `withCredentials: true`; interceptor redirects to `/login` on 401 (no client-side refresh); permission gating is `usePermissions()` (no `<Can>` component); the dependency lives at `app/api/deps.py`. Use `CLAUDE.md`, `backend/CLAUDE.md`, and `frontend/CLAUDE.md` as the source of truth and treat the auth/permission code blocks here as historical illustration until this file is rewritten. The non-auth patterns (TanStack Query usage, type generation, error toast UX) are still accurate.
+
 Detailed patterns for integrating frontend with backend API, including authentication, type safety, error handling, and permission checks.
 
 ## API Client Configuration

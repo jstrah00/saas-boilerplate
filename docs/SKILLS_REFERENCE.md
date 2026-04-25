@@ -475,14 +475,14 @@ export const ProductCard = ({ product, onEdit, onDelete }: ProductCardProps) => 
  <p className="text-2xl">${product.price}</p>
  </CardContent>
  <CardFooter className="gap-2">
- <Can permission="PRODUCTS_WRITE">
+ {hasPermission('PRODUCTS_WRITE') && (
  <Button onClick={() => onEdit?.(product.id)}>Edit</Button>
- </Can>
- <Can permission="PRODUCTS_DELETE">
+ )}
+ {hasPermission('PRODUCTS_DELETE') && (
  <Button variant="destructive" onClick={() => onDelete?.(product.id)}>
  Delete
  </Button>
- </Can>
+ )}
  </CardFooter>
  </Card>
  );

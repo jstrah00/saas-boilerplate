@@ -1,5 +1,7 @@
 # Troubleshooting Guide
 
+> **⚠️ Note (2026-02-06)**: Auth-debugging tips below that reference `localStorage.getItem('access_token')`, manual 401-refresh code, or storing tokens in JS-readable cookies are obsolete. Auth lives in httpOnly cookies. To debug: DevTools → Application → Cookies → look for `access_token` / `refresh_token`. JS cannot read them. See `CLAUDE.md` for the current flow.
+
 Common issues and solutions for the SaaS Boilerplate. If you encounter a problem not listed here, check:
 - `frontend/TROUBLESHOOTING.md` for frontend-specific issues
 - GitHub Issues for reported problems

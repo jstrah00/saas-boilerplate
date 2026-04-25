@@ -178,6 +178,8 @@ class User(Base):
 
 ## Authentication Flow
 
+> **Note (2026-02-06)**: Auth uses httpOnly cookies, not localStorage. The diagrams below were last updated for the localStorage flow and the storage step is the only obsolete piece — `Set-Cookie: access_token=...; HttpOnly; Secure; SameSite=Lax` replaces it. The login response also still emits the JSON body (with the tokens) for Swagger / non-browser clients. Source of truth: `backend/app/api/v1/auth.py:80-145` and `frontend/src/api/client.ts:16-22`.
+
 ### Login Process
 
 ```
@@ -197,14 +199,16 @@ class User(Base):
  │ │ │
  │ │ Generate JWT tokens: │
  │ │ - access (30 min) │
- │ │ - refresh (7 days) │
+ │ │ - refresh (7 / 30 days) │
  │ │ │
- │ {access_token, │ │
- │ refresh_token, │ │
- │ token_type: "bearer"} │ │
+ │ Set-Cookie: access_token │ │
+ │ Set-Cookie: refresh_token│ │
+ │ (HttpOnly; Secure; SameSite=Lax) │
+ │ + JSON body for Swagger │ │
  │◀─────────────────────────┤ │
  │ │ │
- │ Store in localStorage │ │
+ │ Browser stores cookies │ │
+ │ JS never sees the tokens │ │
  │ │ │
 ```
 
@@ -237,51 +241,42 @@ class User(Base):
 │ Browser │ │ Backend │
 └────┬────┘ └────┬────┘
  │ │
- │ API Request │
- │ Authorization: Bearer... │
+ │ API Request (cookies sent automatically) │
  ├─────────────────────────▶│
- │ │ Verify access token
- │ │ [-] Expired
+ │ │ Verify access_token cookie
+ │ │ [-] Expired or missing
  │ │
  │ 401 Unauthorized │
  │◀─────────────────────────┤
  │ │
- │ POST /api/v1/auth/refresh│
- │ {refresh_token} │
- ├─────────────────────────▶│
- │ │ Verify refresh token
- │ │ [X] Valid
- │ │ Generate new access token
- │ │
- │ {access_token} │
- │◀─────────────────────────┤
- │ │
- │ Retry original request │
- │ with new token │
- ├─────────────────────────▶│
+ │ Frontend interceptor: redirect to /login │
+ │ (no client-side refresh — see note below)│
  │ │
 ```
 
-**Frontend Implementation**: Axios interceptor automatically retries failed requests after refresh (see `frontend/src/api/client.ts`)
+**No client-side auto-refresh.** When the access cookie expires, the frontend interceptor (`frontend/src/api/interceptors.ts:39-55`) redirects to `/login`. The user re-authenticates; the backend issues a fresh cookie pair. Refresh-token rotation against `POST /api/v1/auth/refresh` is invoked by the backend on its own internal flows (cookie rotation), and the rotated refresh tokens are blacklisted on use to prevent replay (`backend/app/services/auth_service.py:232-242`).
+
+**Frontend Implementation**: `frontend/src/api/client.ts` — axios with `withCredentials: true`. Interceptors handle 401 (redirect /login), 403 (redirect /unauthorized), and global error toasts.
 
 ### Storage & Security
 
-**Storage Location**: `localStorage`
-- Key: `access_token`, `refresh_token`
-- Alternative: Consider `httpOnly` cookies for production (immune to XSS)
+**Storage Location**: httpOnly + Secure + SameSite=Lax cookies (since 2026-02-06).
+- `access_token` cookie (≈30 min)
+- `refresh_token` cookie (7 d, or 30 d with "remember me")
+- JS does not read these — `document.cookie` returns nothing for httpOnly cookies. CSRF is mitigated via SameSite=Lax + the SPA being same-site relative to the API in production.
 
 **Security Measures**:
-- [X] Passwords hashed with bcrypt (12 rounds)
-- [X] JWT tokens signed with RS256 (private key)
-- [X] Refresh tokens rotated on use (optional)
-- [X] Short access token lifetime (30 min)
-- [X] HTTPS only in production
+- [X] Passwords hashed with bcrypt
+- [X] JWT tokens signed with HS256; `SECRET_KEY` validator rejects the dev placeholder when `ENVIRONMENT=production` (`backend/app/config.py`)
+- [X] Refresh tokens rotated on use; previous values blacklisted to prevent replay
+- [X] Short access token lifetime (≈30 min)
+- [X] HTTPS only in production (`COOKIE_SECURE=true`)
 
 **Don't**:
-- [-] Store tokens in cookies without `httpOnly` flag
-- [-] Log tokens (access or refresh)
+- [-] Read tokens from `document.cookie` or `localStorage` — they are not there
+- [-] Attach `Authorization: Bearer ...` manually from JS — the cookie carries it
+- [-] Log full tokens (`structlog` already censors `password`/`token`/`secret`)
 - [-] Send tokens in URL parameters
-- [-] Use weak signing algorithms (HS256 with weak secrets)
 
 ## Permission System
 
@@ -300,13 +295,19 @@ class Permission(str, Enum):
 **Endpoint Protection**:
 ```python
 # backend/app/api/v1/users.py
-from app.common.dependencies import require_permissions
+from fastapi import APIRouter, Depends
+from app.common.permissions import Permission, require_permissions
+from app.api.deps import get_current_user
 
-@router.get("/users/{user_id}")
-@require_permissions(Permission.USERS_READ)
+router = APIRouter()
+
+@router.get(
+    "/users/{user_id}",
+    dependencies=[Depends(require_permissions(Permission.USERS_READ))],
+)
 async def get_user(user_id: UUID, current_user: User = Depends(get_current_user)):
- # Only users with USERS_READ permission can access
- ...
+    # Only users with USERS_READ permission reach here
+    ...
 ```
 
 **Role Assignment** (`backend/app/models/role.py`):
@@ -326,17 +327,18 @@ user_role = Role(name="user", permissions=[
 
 ### Frontend Permission Checks
 
-**Can Component** (`frontend/src/components/auth/Can.tsx`):
-```typescript
+There is **no `<Can>` component**. Use the `usePermissions()` hook (`frontend/src/hooks/use-permissions.ts`) for inline gating, and `<ProtectedRoute requiredPermissions={[...]}>` for route gating. Permissions arrive from the backend in `user.permissions` (string array) and live in Zustand (`frontend/src/store/slices/authSlice.ts`).
+
+```tsx
 // Show/hide UI based on permissions
-<Can permission="USERS_DELETE">
- <Button onClick={handleDelete}>Delete User</Button>
-</Can>
+import { usePermissions } from '@/hooks/use-permissions'
+
+const { hasPermission, hasAllPermissions, hasAnyPermission } = usePermissions()
+
+{hasPermission('users:delete') && <Button onClick={handleDelete}>Delete User</Button>}
 
 // Multiple permissions (all required)
-<Can permissions={["USERS_WRITE", "ROLES_MANAGE"]}>
- <AdminPanel />
-</Can>
+{hasAllPermissions(['users:write', 'roles:manage']) && <AdminPanel />}
 ```
 
 **usePermissions Hook**:

@@ -1,5 +1,7 @@
 # Fullstack Feature Workflow
 
+> **⚠️ Note (2026-02-06)**: Some sections below mention `localStorage`, `Authorization: Bearer ...` outside of curl/Swagger context, or "auto-refresh via interceptor". Real auth flow uses httpOnly cookies (`withCredentials: true`); 401 redirects to `/login`; backend handles refresh-token rotation. Bearer headers in `curl` examples for testing the API directly are still valid. See `CLAUDE.md` for current behavior.
+
 Complete end-to-end workflows for implementing features across backend and frontend with Claude Code integration.
 
 ## Overview
