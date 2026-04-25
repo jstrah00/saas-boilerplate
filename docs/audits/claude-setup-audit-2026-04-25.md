@@ -104,7 +104,7 @@ saas-boilerplate/
 | `.mcp.json` | ❌ Ausente | Ningún MCP server configurado. |
 | Subagents (`.claude/agents/`) | ❌ Ausente | Ningún subagent definido. |
 | Skills (`.claude/skills/`) | ✅ 14 skills bien organizados | 3 root (orchestrators), 6 backend, 5 frontend. Sin redundancia. |
-| Hooks (`.claude/hooks/`) | ❌ Ausente | Sin protect-bash, protect-files, scan-secrets, typecheck-on-stop. |
+| Hooks (`.claude/hooks/`) | ❌ Ausente | Sin protect-files, scan-secrets, typecheck-on-stop. |
 | Path-scoped rules (`.claude/rules/`) | ❌ Ausente | Sin rules contextuales por path (data layer, migrations, api). |
 | Slash commands (`.claude/commands/`) | ❌ Ausente | Sin `/catchup`, `/ship`, etc. |
 | `docs/` cross-cutting | ✅ Exhaustivo | ARCHITECTURE, FULLSTACK_WORKFLOW, GETTING_STARTED, PERMISSIONS, SKILLS_REFERENCE, TROUBLESHOOTING, CLAUDE_CODE_BEST_PRACTICES, ADRs, prompts/. |
@@ -226,7 +226,7 @@ saas-boilerplate/
 | `AGENTS.md` espejo tool-agnostic | ❌ Ausente | Tier 1 crear |
 | `.claude/settings.json` con permissions+hooks | ⚠️ Sin hooks | Tier 1 wire |
 | `.claude/agents/` (subagents) | ❌ Ausentes | Tier 1: code-reviewer, security-reviewer, test-writer, db-architect, codebase-explorer |
-| `.claude/hooks/` | ❌ Ausentes | Tier 1: protect-bash, protect-files, scan-secrets |
+| `.claude/hooks/` | ❌ Ausentes | Tier 1: protect-files, scan-secrets _(protect-bash inicialmente agregado y luego removido por decisión del usuario)_ |
 | `.claude/rules/` path-scoped | ❌ Ausentes | Tier 1: backend-data-layer, backend-migrations, frontend-api |
 | `.claude/commands/` slash commands | ❌ Ausentes | Tier 1: /catchup, /ship |
 | `.mcp.json` | ❌ Ausente | Tier 1: context7 |

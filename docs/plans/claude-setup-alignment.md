@@ -56,7 +56,7 @@ Todo archivos nuevos. Reversibles con `git rm`. Aprobación: SI/NO global o por 
 
 | Archivo | Evento | Bloquea |
 |---|---|---|
-| `.claude/hooks/protect-bash.sh` | `PreToolUse` matcher `Bash` | `rm -rf`, `git push --force`, `git reset --hard`, `git clean -fd`, comandos contra dominios prod (heurística por env var `PROD_HOST`). |
+| ~~`.claude/hooks/protect-bash.sh`~~ | REVERTED | Inicialmente bloqueaba `rm -rf`, force push, reset --hard, etc. **Removido por decisión del usuario.** |
 | `.claude/hooks/protect-files.sh` | `PreToolUse` matcher `Edit\|Write\|MultiEdit` | Edits a `**/.env`, `**/.env.*` (excepto `.example`), `backend/alembic/versions/*.py` (committeados), `**/package-lock.json`, `**/uv.lock`. Mensaje: "regenerate via tooling, no manual edit". |
 | `.claude/hooks/scan-secrets.sh` | `UserPromptSubmit` | Regex sobre prompt del usuario buscando: AWS keys (`AKIA...`), JWTs (`eyJ...`), Stripe keys (`sk_live_`, `pk_live_`), Telegram tokens (formato `<digits>:<alnum>`), `BEGIN PRIVATE KEY`. Si detecta, bloquea con mensaje. |
 
@@ -65,7 +65,6 @@ Todo archivos nuevos. Reversibles con `git rm`. Aprobación: SI/NO global o por 
 {
   "hooks": {
     "PreToolUse": [
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-bash.sh" }] },
       { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-files.sh" }] }
     ],
     "UserPromptSubmit": [
@@ -153,7 +152,7 @@ Antes de commit voy a verificar si la dep ya está en `node_modules` (a veces vi
 | 3 | `.claude/agents/test-writer.md` | NEW |
 | 4 | `.claude/agents/db-architect.md` | NEW |
 | 5 | `.claude/agents/codebase-explorer.md` | NEW |
-| 6 | `.claude/hooks/protect-bash.sh` | NEW (chmod +x) |
+| 6 | ~~`.claude/hooks/protect-bash.sh`~~ | REVERTED per user decision |
 | 7 | `.claude/hooks/protect-files.sh` | NEW (chmod +x) |
 | 8 | `.claude/hooks/scan-secrets.sh` | NEW (chmod +x) |
 | 9 | `.claude/settings.json` | EDIT — solo agrega bloque `hooks` (T1 excepción: edit a archivo existente para wire de hooks recién creados; sin esto los hooks son inertes) |
@@ -378,7 +377,7 @@ Cada tier tiene su propia aprobación. Podés decir "OK T1, esperá T2".
 - [ ] `cd frontend && npm test -- --run` — verde
 - [ ] `claude --version` arranca sin errores en hooks/settings
 - [ ] `/context` lista CLAUDE.md root + rules cargando OK
-- [ ] Hook `protect-bash.sh` bloquea un test manual `rm -rf /tmp/test-xyz`
+- ~~Hook `protect-bash.sh` bloquea un test manual~~ (hook removido)
 - [ ] `Settings(SECRET_KEY="dev-secret-key-x", ENVIRONMENT="production")` raises `ValidationError`
 - [ ] Test cross-user leak pasa
 - [ ] `git log --oneline` muestra Conventional Commits
