@@ -29,6 +29,6 @@ You design the relational schema for a FastAPI + SQLAlchemy 2 (async) + Alembic 
 6. NEVER edit a committed migration. Fix-forward with a new migration.
 7. NEVER hand-write a migration unless autogenerate cannot represent the operation (rare: data backfills).
 
-## Drift note
+## Schema ownership
 
-`init_postgres()` in `backend/app/main.py:106-107` currently creates initial schema in dev (bypasses Alembic). Until that is migrated, every new model needs a corresponding Alembic migration so prod gets it.
+Alembic is the single owner of schema in every environment — the previous `init_postgres()` shortcut in `backend/app/main.py` was removed. Every new model MUST ship with its corresponding Alembic migration before being merged; nothing else creates tables.
