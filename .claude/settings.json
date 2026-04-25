@@ -229,5 +229,61 @@
     "model_example": "backend/app/models/user.py",
     "component_example": "frontend/src/features/auth/components/",
     "form_example": "frontend/src/features/auth/components/LoginForm.tsx"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git stash:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv run alembic:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run generate:types:*)"
+    ],
+    "ask": [
+      "Bash(npm install:*)",
+      "Bash(npm i :*)",
+      "Bash(uv add:*)",
+      "Bash(uv remove:*)",
+      "Bash(git push:*)",
+      "Bash(docker:*)",
+      "Bash(docker compose:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./backend/.env)",
+      "Read(./frontend/.env)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {"type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-bash.sh"}
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {"type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-files.sh"}
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {"type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/scan-secrets.sh"}
+        ]
+      }
+    ]
   }
 }
