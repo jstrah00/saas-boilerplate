@@ -24,3 +24,13 @@ Applies when editing: `frontend/src/api/**`, `frontend/src/features/**/api/**`, 
 
 - Keep query keys consistent within a feature: `['users']`, `['users', id]`, `['items', { ownerId }]`.
 - Invalidate aggressively after mutations: `queryClient.invalidateQueries({ queryKey: ['items'] })`.
+
+## Permission gates
+
+Three primitives, all reading the same Zustand permission list — pick the right one for the surface:
+
+- **`<ProtectedRoute requiredPermissions={[...]}>`** (`src/routes/protected-route.tsx`) — route-level gate. Wraps a page; redirects to `/unauthorized` on miss.
+- **`<Can perform="users:read" yes={...} no={...}>`** (`src/components/can.tsx`) — JSX-level gate. Use to show/hide elements inside a component (e.g. sidebar items, action buttons).
+- **`usePermissions()`** (`src/hooks/use-permissions.ts`) — programmatic checks for hooks/handlers where JSX doesn't fit.
+
+Avoid hand-rolling `user.permissions.includes('foo')` checks when one of the three would do.

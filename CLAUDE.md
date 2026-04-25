@@ -70,7 +70,10 @@ cd frontend && npm run generate:types
 
 ### Permission System
 - **Backend**: `@require_permissions(Permission.USERS_READ)` decorator at the API layer (never in services). See `backend/app/common/permissions.py`.
-- **Frontend**: `usePermissions()` hook in `frontend/src/hooks/use-permissions.ts` (`hasPermission`, `hasAllPermissions`, `hasAnyPermission`) and `<ProtectedRoute requiredPermissions={[...]}>` in `frontend/src/routes/protected-route.tsx`. There is no `<Can>` component.
+- **Frontend**: three complementary primitives, all reading the same permission list from the Zustand auth store:
+  - `<ProtectedRoute requiredPermissions={[...]}>` in `frontend/src/routes/protected-route.tsx` — route-level gate.
+  - `<Can perform="users:read" yes={...} no={...}>` in `frontend/src/components/can.tsx` — JSX-level gate for rendering branches conditionally (used e.g. in the sidebar at `frontend/src/components/layout/sidebar.tsx`).
+  - `usePermissions()` hook in `frontend/src/hooks/use-permissions.ts` (`hasPermission`, `hasAllPermissions`, `hasAnyPermission`) — programmatic checks inside hooks/handlers where JSX doesn't fit.
 - **Sync**: Frontend regenerates types from backend OpenAPI via `cd frontend && npm run generate:types`.
 
 ### Error Handling
