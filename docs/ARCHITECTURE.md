@@ -278,6 +278,17 @@ class User(Base):
 - [-] Log full tokens (`structlog` already censors `password`/`token`/`secret`)
 - [-] Send tokens in URL parameters
 
+### OAuth / SSO: known gap
+
+The boilerplate only implements email + password authentication. Adding an OAuth provider (Apple, Google, GitHub, SSO) requires an ADR in `docs/adr/` first that defines:
+
+- The `AuthProvider` abstraction — a common interface for multiple providers, so password and OAuth flows share user creation, session issuance, and the refresh-token rotation/blacklist machinery.
+- How the OAuth flow maps onto the current refresh-token + blacklist model (when the IdP issues its own tokens, when ours are issued, what gets stored, what gets rotated on use).
+- How external identity is persisted (`provider` + `provider_user_id`) versus the internal `User` row, and which is canonical for the JWT `sub` claim.
+- Whether multiple providers can link to the same `User` (account linking) and the matching strategy (verified email, manual confirmation, none).
+
+**Do not implement OAuth without this ADR approved.** The current model assumes a single-source identity and a workaround that bypasses the refresh-rotation/blacklist machinery can create session bugs or cross-account data leaks.
+
 ## Permission System
 
 ### Backend RBAC

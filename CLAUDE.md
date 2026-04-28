@@ -111,6 +111,9 @@ Backend enforces with `@require_permissions(Permission.X)` (decorator at API lay
 - When `Organization` is introduced, queries must additionally filter by `organization_id`. Add a regression test before that refactor.
 - **See**: `docs/audits/claude-setup-audit-2026-04-25.md` (CRITICAL-1) for the full gap.
 
+### OAuth / SSO: NOT IMPLEMENTED
+- Only email + password with JWT in httpOnly cookies. Adding Apple / Google / GitHub / SSO requires an ADR first — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) § OAuth / SSO: known gap.
+
 ## Path-scoped rules
 
 Rules referenced by area of the codebase. Read the relevant one before editing files in that path:
