@@ -16,6 +16,6 @@ Applies when editing: `backend/alembic/**`, `backend/app/models/**`.
 - NEVER hand-write a migration unless autogenerate cannot represent the operation (rare: data backfills).
 - NEVER skip the SQL review step.
 
-## Initial-schema drift note
+## Schema ownership
 
-`init_postgres()` in `backend/app/main.py:106-107` currently creates initial schema directly in dev. This bypasses Alembic and risks drift in prod. New tables MUST also have a corresponding Alembic migration so prod gets them.
+Alembic is the single source of truth for the PostgreSQL schema in **all** environments (dev / staging / prod). `init_postgres()` was removed during the 2026-04-25 alignment work — the empty-schema bootstrap path that bypassed migrations no longer exists. Every new model needs its corresponding migration. If you ever see direct `Base.metadata.create_all()` reintroduced for application schema, it's a regression — fix-forward by removing it and verifying every table has a migration.
