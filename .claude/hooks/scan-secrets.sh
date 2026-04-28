@@ -23,5 +23,7 @@ if match '[0-9]{8,12}:[A-Za-z0-9_-]{30,}'; then reject "Telegram bot token"; fi
 if match '-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----'; then reject "PEM private key"; fi
 if match '\bghp_[A-Za-z0-9]{36}\b|\bgithub_pat_[A-Za-z0-9_]{82}\b'; then reject "GitHub token"; fi
 if match '\bxox[abprs]-[A-Za-z0-9-]{10,}\b'; then reject "Slack token"; fi
+if match 'sk-ant-(api|oat)[0-9]{2}-[A-Za-z0-9_-]{32,}'; then reject "Anthropic API key"; fi
+if match 'sk-(proj-)?[A-Za-z0-9_-]{40,}'; then reject "OpenAI API key"; fi
 
 exit 0
