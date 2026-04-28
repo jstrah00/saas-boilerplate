@@ -13,4 +13,4 @@ This repository's primary AI configuration is for **Claude Code**. The same Mark
   - `frontend-api.md` — generated types, apiClient, httpOnly cookies.
 - `.claude/agents/` — Claude Code subagent definitions (frontmatter + prompt). The prompts are stack-aware and adaptable to other agent runtimes.
 - `.claude/skills/`, `backend/.claude/skills/`, `frontend/.claude/skills/` — Claude Code skills covering common scaffolding flows.
-- `docs/` — architecture, full-stack workflow, troubleshooting, audits, plans.
+- `docs/` — architecture, full-stack workflow, troubleshooting, gotchas. Plans/audits follow a 3-tier model: `.claude/scratch/{audits,plans}/` (gitignored ephemeral) for meta-work about the Claude setup; `docs/plans/active/` for tracked in-flight feature plans; `docs/adr/` for permanent architectural decisions. Pre-2026-04-28 work archived under `docs/audits/` and `docs/plans/`.
