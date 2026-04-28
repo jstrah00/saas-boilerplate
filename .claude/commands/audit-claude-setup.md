@@ -35,7 +35,7 @@ Para esta fase usá subagents en paralelo si están disponibles — delegá la e
 - Un explorador para tests + CI
 - Un explorador para la config existente de Claude/AI
 
-ENTREGABLE de Fase 1 — escribilo a `docs/audits/claude-setup-audit-YYYY-MM-DD.md`:
+ENTREGABLE de Fase 1 — escribilo a `.claude/scratch/audits/claude-setup-audit-YYYY-MM-DD.md` (gitignored — los audits sobre el setup de Claude son ephemeral, no patrimonio del repo):
 
 ```markdown
 # Claude Code Setup Audit — [fecha]
@@ -92,7 +92,7 @@ FASE 2 — PLAN DE REMEDIACIÓN (escribir, no aplicar)
 
 Solo después de mi OK en Fase 1.
 
-Generá un plan en `docs/plans/claude-setup-alignment.md` con esta estructura:
+Generá un plan en `.claude/scratch/plans/claude-setup-alignment.md` (gitignored — el plan acompaña al audit de Fase 1; si terminás materializando una decisión arquitectónica que vale conservar, promovela a `docs/adr/` antes de borrar) con esta estructura:
 
 ```markdown
 # Plan: Alinear repo con best practices Claude Code 2026
