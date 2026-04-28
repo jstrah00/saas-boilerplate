@@ -2,6 +2,7 @@
 
 # Claude Code worktrees, ephemeral scratch, and local context overlays
 .claude/worktrees/
-.claude/scratch/
+.claude/scratch/*
+!.claude/scratch/README.md
 CLAUDE.local.md
 **/CLAUDE.local.md
