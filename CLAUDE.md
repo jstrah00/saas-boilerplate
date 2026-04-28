@@ -152,10 +152,13 @@ Sub-commits when bumping a submodule pointer in the super-repo: prefix `chore:` 
 - **docs/FULLSTACK_WORKFLOW.md** — E2E feature implementation
 - **docs/prompts/integration-patterns.md** — API patterns with code
 
-### Audits & Plans
-- **docs/audits/** — One-off audits (latest: `claude-setup-audit-2026-04-25.md`)
-- **docs/plans/** — Multi-step implementation plans
-- **docs/gotchas.md** — Running log of real incidents and their fixes
+### Audits, Plans & Decisions (3-tier model)
+- **`.claude/scratch/{audits,plans}/`** — gitignored ephemeral. Meta-audits about the Claude setup, drift checks, and tactical cleanup plans live here. Borrar libre.
+- **`docs/plans/active/`** — committed. Multi-day feature plans worth tracking while in flight. Promote to `docs/adr/` if the plan ships an architectural decision worth preserving; delete on completion.
+- **`docs/adr/`** — committed. Permanent architectural decisions (e.g. `001-dual-database-strategy.md`).
+- **`docs/gotchas.md`** — running log of real incidents and their fixes.
+
+_Archive_: pre-2026-04-28 audits/plans about the Claude setup itself live in `docs/audits/` and `docs/plans/` (root). Read-only history; new ephemeral work goes to `.claude/scratch/`.
 
 ### Layer-Specific
 - **backend/CLAUDE.md** — Backend context
