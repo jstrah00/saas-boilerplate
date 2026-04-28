@@ -58,19 +58,19 @@ cd frontend && npm run generate:types
 ```
 
 ### Authentication Flow
-- **Login**: POST `/api/v1/auth/login` → response sets httpOnly cookies (access ~30 min, refresh 7 d / 30 d "remember me").
-- **Storage**: httpOnly + secure + samesite=lax cookies. JS does NOT touch tokens. Migration from localStorage Bearer happened on 2026-02-06.
-- **Interceptor**: `frontend/src/api/client.ts` axios instance with `withCredentials: true`. Cookies travel automatically. 401 → redirect to `/login`; 403 → redirect to `/unauthorized`. No client-side auto-refresh — refresh is handled server-side via the refresh-token cookie.
-- **Backend**: `backend/app/api/deps.py:get_current_user` (around line 138). Reads cookie or `Authorization` header.
-- **Frontend**: `frontend/src/features/auth/hooks/use-login.ts` for the login mutation; `frontend/src/store/slices/authSlice.ts` for the resulting Zustand state.
+
+JWT in httpOnly cookies. Backend (`backend/app/api/deps.py:get_current_user` ~L138) reads cookie or `Authorization` header. Frontend (`frontend/src/api/client.ts`) sends cookies via `withCredentials: true`; the login mutation is in `frontend/src/features/auth/hooks/use-login.ts` and resolved permissions land in `frontend/src/store/slices/authSlice.ts`.
+
+**Full flow + token structure + refresh mechanics + security checklist**: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) § Authentication Flow.
 
 ### Permission System
-- **Backend**: `@require_permissions(Permission.USERS_READ)` decorator at the API layer (never in services). See `backend/app/common/permissions.py`.
-- **Frontend**: three complementary primitives, all reading the same permission list from the Zustand auth store:
-  - `<ProtectedRoute requiredPermissions={[...]}>` in `frontend/src/routes/protected-route.tsx` — route-level gate.
-  - `<Can perform="users:read" yes={...} no={...}>` in `frontend/src/components/can.tsx` — JSX-level gate for rendering branches conditionally (used e.g. in the sidebar at `frontend/src/components/layout/sidebar.tsx`).
-  - `usePermissions()` hook in `frontend/src/hooks/use-permissions.ts` (`hasPermission`, `hasAllPermissions`, `hasAnyPermission`) — programmatic checks inside hooks/handlers where JSX doesn't fit.
-- **Sync**: Frontend regenerates types from backend OpenAPI via `cd frontend && npm run generate:types`.
+
+Backend enforces with `@require_permissions(Permission.X)` (decorator at API layer, never in services). Frontend has three primitives — pick by surface:
+- `<ProtectedRoute>` (`frontend/src/routes/protected-route.tsx`) — route gate.
+- `<Can>` (`frontend/src/components/can.tsx`) — JSX gate.
+- `usePermissions()` (`frontend/src/hooks/use-permissions.ts`) — programmatic checks.
+
+**Detailed RBAC + security boundary**: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) § Permission System.
 
 ### Error Handling
 - **Backend**: `app/common/exceptions.py` → HTTP exceptions with detail
