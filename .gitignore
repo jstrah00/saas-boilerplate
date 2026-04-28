@@ -1,6 +1,7 @@
 .env
 
-# Claude Code worktrees and local context overlays
+# Claude Code worktrees, ephemeral scratch, and local context overlays
 .claude/worktrees/
+.claude/scratch/
 CLAUDE.local.md
 **/CLAUDE.local.md
