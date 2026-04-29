@@ -1,6 +1,12 @@
 # API Integration Patterns
 
-> **⚠️ Note (2026-02-06)**: The auth examples below — `localStorage.getItem('access_token')`, `Authorization: Bearer ...` set manually from JS, client-side auto-refresh interceptors, `<Can permission="...">` component, the `app/common/dependencies.py` path — **predate the cookie migration**. Current reality: httpOnly cookies via `withCredentials: true`; interceptor redirects to `/login` on 401 (no client-side refresh); permission gating is `usePermissions()` (no `<Can>` component); the dependency lives at `app/api/deps.py`. Use `CLAUDE.md`, `backend/CLAUDE.md`, and `frontend/CLAUDE.md` as the source of truth and treat the auth/permission code blocks here as historical illustration until this file is rewritten. The non-auth patterns (TanStack Query usage, type generation, error toast UX) are still accurate.
+> **⚠️ Note (2026-02-06, extended 2026-04-28)**: Several code blocks below predate the current stack. Specifically:
+>
+> - **Auth (pre-cookie migration)**: `localStorage.getItem('access_token')`, `Authorization: Bearer ...` set manually from JS, client-side auto-refresh interceptors, `<Can permission="...">` component, the `app/common/dependencies.py` path. Current reality: httpOnly cookies via `withCredentials: true`; interceptor redirects to `/login` on 401 (no client-side refresh); permission gating is `<Can perform="...">` plus `usePermissions()`; the dependency lives at `app/api/deps.py`.
+> - **Pagination shape**: examples below use `{items, total, page, size, pages}`. The canonical shape (see `.claude/rules/backend-data-layer.md`) is `{<resource_key>: list[T], total, skip, limit}` — offset/limit, not page/size, and the items live under a resource-named key, not `items`.
+> - **Router**: any `@tanstack/react-router` import is wrong. The project uses `react-router-dom v6`.
+>
+> Use `CLAUDE.md` (root + backend + frontend), `.claude/rules/`, and the per-layer skills as the source of truth. Treat the affected code blocks here as historical illustration until this file is rewritten. Non-auth/non-pagination patterns (TanStack Query usage, type generation, error toast UX) are still accurate.
 
 Detailed patterns for integrating frontend with backend API, including authentication, type safety, error handling, and permission checks.
 
