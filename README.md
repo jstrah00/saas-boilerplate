@@ -371,12 +371,13 @@ This boilerplate is optimized for development with Claude Code via skills and co
 
 ### Available Skills
 
-**Backend** (5 skills):
+**Backend** (6 skills):
 - `/fastapi-endpoint` - Complete CRUD with all layers
 - `/fastapi-model` - SQLAlchemy models
 - `/fastapi-migration` - Alembic migrations
 - `/fastapi-permission` - Add permissions to RBAC
 - `/fastapi-test` - pytest tests
+- `/feature-from-plan` - Implement a feature from a structured plan
 
 **Frontend** (5 skills):
 - `/react-component` - TypeScript components with shadcn/ui
@@ -385,14 +386,7 @@ This boilerplate is optimized for development with Claude Code via skills and co
 - `/react-feature` - Complete frontend feature
 - `/react-page` - Page with routing
 
-**Root** (5 skills):
-- **Active:**
- - `/backend-first` - Backend-first fullstack workflow
- - `/api-to-ui` - Frontend UI for existing backend APIs
- - `/fullstack-feature` - Complete E2E feature
-- **Planned:**
- - `/api-contract` - Type-safe API contracts
- - `/deploy` - Deployment automation
+There is no root-level orchestrator skill — chain the per-layer skills yourself for fullstack flows. (Earlier `/api-to-ui`, `/backend-first`, `/fullstack-feature` were removed on 2026-04-28; they had drifted from the actual stack. See `docs/SKILLS_REFERENCE.md`.)
 
 ### Quick Example
 
