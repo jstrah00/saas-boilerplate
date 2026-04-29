@@ -516,42 +516,7 @@ Generates: Page component, adds route, handles navigation
 Time: ~1 min
 ```
 
-### Root Skills
-
-[!] **Note**: Skills marked as **(PLANNED)** are not yet available. Only invoke skills marked as **(ACTIVE)**.
-
-**backend-first** - Backend-first workflow (ACTIVE)
-```
-Use: "Implement Product feature using backend-first workflow"
-Generates: Complete backend (models, migrations, endpoints, tests) + frontend integration
-Time: ~10 min
-```
-
-**api-to-ui** - API to UI integration (ACTIVE)
-```
-Use: "Create frontend UI for existing Product endpoints"
-Generates: API client, React Query hooks, components, forms, pages
-Time: ~5 min
-```
-
-**fullstack-feature** - Complete E2E feature (ACTIVE)
-```
-Use: "Create complete Product catalog (backend + frontend)"
-Generates: Database models, API, frontend UI, routing, permissions
-Time: ~15 min
-```
-
-**api-contract** - Type-safe API contracts (PLANNED)
-```
-Use: "Ensure Product API contract matches frontend usage"
-Status: Planned - not yet available
-```
-
-**deploy** - Deployment automation (PLANNED)
-```
-Use: "Deploy to production"
-Status: Planned - not yet available
-```
+> **Note**: Earlier root-level orchestrator skills (`/api-to-ui`, `/backend-first`, `/fullstack-feature`) were removed on 2026-04-28 — they had drifted from the actual stack (wrong paths, wrong router, wrong pagination shape). Chain the per-layer backend + frontend skills above instead. See `docs/SKILLS_REFERENCE.md` for the canonical 11-skill catalog.
 
 ### When to Use Skills vs Manual Prompts
 
