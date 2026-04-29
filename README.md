@@ -42,17 +42,17 @@ This monorepo provides a complete foundation for building SaaS applications with
 - [X] **shadcn/ui** component library
 - [X] **Tailwind CSS** utility-first styling
 - [X] **react-hook-form** + **Zod** validation
-- [X] **axios** with interceptors (auto token refresh)
+- [X] **axios** with interceptors (httpOnly cookies, auto-redirect to /login on 401)
 - [X] **Type generation** from backend OpenAPI
 
 ### Integration
 
 - [X] **Type-safe API** contracts (backend → frontend)
-- [X] **Auto token refresh** on 401
+- [X] **httpOnly cookie auth** (no client-side refresh; 401 redirects to /login)
 - [X] **Permission checks** (backend enforces, frontend UX)
 - [X] **Error handling** (backend exceptions → frontend toasts)
 - [X] **Docker Compose** for local development
-- [X] **Claude Code skills** (13 skills for rapid development)
+- [X] **Claude Code skills** (11 skills: 6 backend + 5 frontend)
 
 ## Quick Start
 
