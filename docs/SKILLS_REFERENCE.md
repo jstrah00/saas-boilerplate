@@ -1,6 +1,6 @@
 # Skills Reference
 
-Human-readable index of every Claude Code skill in this monorepo. One paragraph per skill plus a link to its full `SKILL.md`. Authoritative metadata (descriptions, locations) lives in `.claude/settings.json` — this file is the prose companion.
+Human-readable index of every Claude Code skill in this monorepo. One paragraph per skill plus a link to its full `SKILL.md`. Authoritative metadata (`name`, `description`) lives in each `SKILL.md` frontmatter — this file is the prose companion that Claude Code auto-loads alongside.
 
 **Skills**: 6 backend + 5 frontend = 11.
 
