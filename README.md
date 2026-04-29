@@ -80,7 +80,7 @@ docker compose up -d
 [!] **SECURITY WARNING**: Change these immediately in production!
 
 - **Email**: `admin@example.com`
-- **Password**: `admin123`
+- **Password**: `Ginorompepija123`
 
 **Production Security Checklist**:
 - [ ] Change admin password via API or database
@@ -96,30 +96,30 @@ docker compose up -d
 
 ### Quick Start & Setup
 
-- **[docs/GETTING_STARTED.md](./docs/GETTING_STARTED.md)** - Installation, setup, first steps (145 lines)
-- **[CLAUDE.md](./CLAUDE.md)** - Root orchestration context for Claude Code (150 lines)
+- **[docs/GETTING_STARTED.md](./docs/GETTING_STARTED.md)** - Installation, setup, first steps
+- **[CLAUDE.md](./CLAUDE.md)** - Root orchestration context for Claude Code
 
 ### Architecture & Design
 
-- **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - System architecture, database strategy, auth flow (220 lines)
-- **[backend/CLAUDE.md](./backend/CLAUDE.md)** - Backend patterns and workflow (194 lines)
-- **[frontend/CLAUDE.md](./frontend/CLAUDE.md)** - Frontend patterns and workflow (212 lines)
+- **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - System architecture, database strategy, auth flow
+- **[backend/CLAUDE.md](./backend/CLAUDE.md)** - Backend patterns and workflow
+- **[frontend/CLAUDE.md](./frontend/CLAUDE.md)** - Frontend patterns and workflow
 
 ### Workflows & Implementation
 
-- **[docs/FULLSTACK_WORKFLOW.md](./docs/FULLSTACK_WORKFLOW.md)** - End-to-end feature implementation (270 lines)
+- **[docs/FULLSTACK_WORKFLOW.md](./docs/FULLSTACK_WORKFLOW.md)** - End-to-end feature implementation
 - **[backend/docs/FEATURE_WORKFLOW.md](./backend/docs/FEATURE_WORKFLOW.md)** - Backend feature workflow
 - **[frontend/docs/FEATURE_WORKFLOW.md](./frontend/docs/FEATURE_WORKFLOW.md)** - Frontend feature workflow
 
 ### Code Patterns & Examples
 
-- **[docs/prompts/integration-patterns.md](./docs/prompts/integration-patterns.md)** - API integration patterns with code (400 lines)
+- **[docs/prompts/integration-patterns.md](./docs/prompts/integration-patterns.md)** - API integration patterns with code
 - **[backend/docs/prompts/backend-patterns.md](./backend/docs/prompts/backend-patterns.md)** - Backend code patterns
 - **[frontend/docs/prompts/frontend-patterns.md](./frontend/docs/prompts/frontend-patterns.md)** - Frontend code patterns
 
 ### Claude Code Integration
 
-- **[docs/CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md)** - Comprehensive guide (240 lines)
+- **[docs/CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md)** - Comprehensive guide
  - Model selection (Sonnet vs Opus)
  - Plan mode usage
  - Token management strategies
@@ -127,7 +127,7 @@ docker compose up -d
  - Skills reference
  - Checklists
 
-- **[docs/prompts/CLAUDE_PROJECT_SETUP.md](./docs/prompts/CLAUDE_PROJECT_SETUP.md)** - Claude.ai Project setup for planning (180 lines)
+- **[docs/prompts/CLAUDE_PROJECT_SETUP.md](./docs/prompts/CLAUDE_PROJECT_SETUP.md)** - Claude.ai Project setup for planning
 
 ## Project Structure
 
@@ -147,7 +147,7 @@ saas-boilerplate/
 │ ├── alembic/ # Database migrations
 │ ├── CLAUDE.md # Backend context
 │ ├── docs/ # Backend documentation
-│ └── requirements.txt # Python dependencies
+│ └── pyproject.toml # Python deps + project config (uv)
 │
 ├── frontend/ # React frontend
 │ ├── src/
@@ -162,7 +162,7 @@ saas-boilerplate/
 │ │ ├── lib/ # Utilities (api-client, utils)
 │ │ ├── types/ # TypeScript types
 │ │ │ └── generated/ # Auto-generated from backend
-│ │ ├── routes/ # TanStack Router routes
+│ │ ├── routes/ # React Router v6 routes
 │ │ └── main.tsx # App entry point
 │ ├── CLAUDE.md # Frontend context
 │ ├── docs/ # Frontend documentation
@@ -176,12 +176,10 @@ saas-boilerplate/
 │ └── CLAUDE_PROJECT_SETUP.md
 │
 ├── .claude/ # Claude Code configuration
-│ └── settings.json # Skills configuration
+│ └── settings.json # Permissions + hooks
 │
 ├── docker-compose.yml # Docker services
-├── CLAUDE.md # Root context for Claude Code 
-├── CLAUDE_CODE_BEST_PRACTICES.md # Comprehensive Claude Code guide 
-├── GETTING_STARTED.md # Setup guide
+├── CLAUDE.md # Root context for Claude Code
 └── README.md # This file
 ```
 
@@ -250,11 +248,10 @@ uv run pytest
 uv run dev
 
 # Format code
-uv run black .
-uv run isort .
+uv run ruff format .
 
 # Lint
-uv run flake8 .
+uv run ruff check --fix .
 ```
 
 **See**: `backend/CLAUDE.md` for detailed workflow
@@ -414,7 +411,7 @@ cd frontend && npm run generate:types
 
 **Essential Reading** (for effective Claude Code usage):
 
-1. **[CLAUDE_CODE_BEST_PRACTICES.md](./CLAUDE_CODE_BEST_PRACTICES.md)**
+1. **[docs/CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md)**
  - Comprehensive A-I guide covering:
  - Model selection (Sonnet vs Opus)
  - Plan mode (when/how to use)
@@ -441,9 +438,8 @@ cd frontend && npm run generate:types
 ### Code Style
 
 **Backend**:
-- Use `black` for formatting
-- Use `isort` for import sorting
-- Follow `flake8` rules
+- Use `ruff format` for formatting
+- Use `ruff check` for linting (autofix + import sorting included)
 - Use type hints everywhere
 - Write docstrings for public functions
 
@@ -485,7 +481,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 4. Ensure types generated: `cd frontend && npm run generate:types`
 5. Commit with descriptive message
 6. Push and create pull request
-7. Ensure CI passes (tests, linting)
+7. Ensure tests and linting pass locally
 8. Request review
 
 ## License
@@ -539,7 +535,7 @@ Built with:
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [React](https://react.dev/)
 - [TanStack Query](https://tanstack.com/query)
-- [TanStack Router](https://tanstack.com/router)
+- [React Router](https://reactrouter.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [SQLAlchemy](https://www.sqlalchemy.org/)
