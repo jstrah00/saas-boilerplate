@@ -2,15 +2,9 @@
 
 Human-readable index of every Claude Code skill in this monorepo. One paragraph per skill plus a link to its full `SKILL.md`. Authoritative metadata (descriptions, locations) lives in `.claude/settings.json` — this file is the prose companion.
 
-**Skills**: 3 root + 6 backend + 5 frontend = 14.
+**Skills**: 6 backend + 5 frontend = 11.
 
 ---
-
-## Root — cross-stack orchestrators (`.claude/skills/`)
-
-- **`/backend-first`** — Backend-first fullstack workflow: data models → migrations → endpoints → tests → generate types → frontend integration. Recommended default for data-driven features (CRUD, dashboards). Full prompt at [`.claude/skills/backend-first/SKILL.md`](../.claude/skills/backend-first/SKILL.md).
-- **`/api-to-ui`** — Build the React UI layer for an API that already exists: types from OpenAPI, axios client, TanStack Query hooks, components, pages. Full prompt at [`.claude/skills/api-to-ui/SKILL.md`](../.claude/skills/api-to-ui/SKILL.md).
-- **`/fullstack-feature`** — Greenfield CRUD with explicit planning + DB choice + RBAC. Combines `/backend-first` and `/api-to-ui` in one session. Most comprehensive. Full prompt at [`.claude/skills/fullstack-feature/SKILL.md`](../.claude/skills/fullstack-feature/SKILL.md).
 
 ## Backend — FastAPI per-layer (`backend/.claude/skills/`)
 
@@ -35,30 +29,34 @@ Human-readable index of every Claude Code skill in this monorepo. One paragraph 
 
 ```
 Need a feature?
-├─ Backend + frontend, nothing exists  →  /fullstack-feature   (or /backend-first if you want more control)
-├─ Backend exists, build UI            →  /api-to-ui
-└─ Touching only one layer             →  use the per-layer skill
+└─ Use the per-layer skill that matches the layer you're touching.
+   Chain them in order (model → migration → endpoint → test → integration → component → page)
+   for a fullstack flow. There is no orchestrator skill — drive the chain yourself.
 ```
 
 | You need | Skill |
 |---|---|
-| New CRUD resource (data-driven) | `/backend-first` |
-| Greenfield with full planning | `/fullstack-feature` or `/feature-from-plan` |
-| Backend exists, build UI | `/api-to-ui` |
-| Single endpoint | `/fastapi-endpoint` |
+| New endpoint with full layered scaffold | `/fastapi-endpoint` |
 | New model only | `/fastapi-model` |
+| Database migration | `/fastapi-migration` |
 | Add a permission | `/fastapi-permission` |
-| Form with validation | `/react-form` |
-| Complete frontend feature | `/react-feature` |
+| Backend tests | `/fastapi-test` |
+| Implement a feature from a structured plan | `/feature-from-plan` |
+| API client + React Query hooks | `/api-integration` |
+| Form with Zod validation | `/react-form` |
+| New React component | `/react-component` |
+| New page + route | `/react-page` |
+| Complete frontend feature folder | `/react-feature` |
 
 ---
 
 ## Notes
 
 - Skills are starting points, not final products. Always read what's generated, refine prompts, iterate.
-- Skills implement patterns documented in `docs/FULLSTACK_WORKFLOW.md`, `backend/docs/FEATURE_WORKFLOW.md`, and `frontend/docs/FEATURE_WORKFLOW.md`. Read those guides to understand **why** the generated code looks the way it does.
+- Skills implement patterns documented in `backend/docs/FEATURE_WORKFLOW.md` and `frontend/docs/FEATURE_WORKFLOW.md`. Read those guides to understand **why** the generated code looks the way it does.
 - For pattern reference (deeper than this index but more readable than `SKILL.md`): see `backend/docs/prompts/backend-patterns.md` and `frontend/docs/prompts/frontend-patterns.md`.
+- Earlier root-level orchestrator skills (`/api-to-ui`, `/backend-first`, `/fullstack-feature`) were removed on 2026-04-28 — they had drifted from the actual stack. Use the per-layer skills above instead.
 
 ---
 
-**Last updated**: 2026-04-28 (trimmed from 913L narrative to one-paragraph index per [CLN-9 in the cleanup audit](audits/claude-cleanup-audit-2026-04-28.md))
+**Last updated**: 2026-04-28
